@@ -22,11 +22,6 @@ const (
 	dirAPILinkT   = "https://api.github.com/repos/{{.Repo}}/contents/{{.Dir}}?ref={{.Branch}}"
 )
 
-// Config is the TOML config with attached handlers
-type Config struct {
-	Categories map[string]Category
-}
-
 // Category is struct with all information about content in given category
 type Category struct {
 	Repo, Branch, Dir, Name, Ext string
@@ -43,6 +38,11 @@ func (category *Category) makeLink(linkTemplate string) (content string, err err
 		return "", err
 	}
 	return buffer.String(), nil
+}
+
+// Config is the TOML config with attached handlers
+type Config struct {
+	Categories map[string]Category
 }
 
 func (config *Config) handleCategories(w http.ResponseWriter, r *http.Request) {
@@ -69,6 +69,7 @@ func (config *Config) handleCategory(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
 	res, err := http.Get(link)
 	if err != nil {
 		log.Fatal(err)
@@ -82,10 +83,19 @@ func (config *Config) handleCategory(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	names := gjson.Get(string(content), "#.name")
-	for _, name := range names.Array() {
-		fmt.Fprintln(w, name.String())
+	namesQuery := gjson.Get(string(content), "#.name")
+	var names []string
+	for _, name := range namesQuery.Array() {
+		names = append(names, name.String())
 	}
+
+	t, err := template.ParseFiles("templates/category.html")
+	if err != nil {
+		log.Fatal(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	t.Execute(w, names)
 }
 
 func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
