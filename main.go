@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"sort"
@@ -10,7 +9,6 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/gorilla/mux"
-	"github.com/tidwall/gjson"
 )
 
 const (
@@ -44,42 +42,11 @@ func (config *Config) handleCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	link, err := category.makeLink(dirAPILinkT)
+	articles, err := category.getArticles()
 	if err != nil {
 		log.Fatal(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
-	}
-
-	res, err := http.Get(link)
-	if err != nil {
-		log.Fatal(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	content, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
-	if err != nil {
-		log.Fatal(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	names := gjson.Get(string(content), "#.name")
-	var articles []Article
-	var article Article
-	for _, name := range names.Array() {
-		article = Article{
-			Category: category,
-			File:     name.String(),
-		}
-		article.Raw, err = article.getRaw()
-		if err != nil {
-			log.Fatal(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		article.Title = article.getTitle()
-		articles = append(articles, article)
 	}
 
 	t, err := template.ParseFiles("templates/category.html")
