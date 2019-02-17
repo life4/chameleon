@@ -1,0 +1,6 @@
+[categories.rus]
+repo = "orsinium/notes"
+branch = "master"
+dir = "notes-ru"
+name = "Russian Articles"
+ext = "md"
