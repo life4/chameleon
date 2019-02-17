@@ -50,13 +50,23 @@ func (config *Config) handleCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	t, err := template.ParseFiles("templates/category.html")
+	t, err := template.ParseFiles("templates/base.html", "templates/category.html")
 	if err != nil {
 		log.Fatal(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	t.Execute(w, articles)
+	err = t.Execute(w, struct {
+		Articles []Article
+		Category Category
+	}{
+		Articles: articles,
+		Category: category,
+	})
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 }
 
 func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
@@ -81,13 +91,17 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 	article.Title = article.getTitle()
 	article.HTML = string(blackfriday.Run([]byte(raw)))
 
-	t, err := template.ParseFiles("templates/article.html")
+	t, err := template.ParseFiles("templates/base.html", "templates/article.html")
 	if err != nil {
 		log.Fatal(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	t.Execute(w, article)
+	err = t.Execute(w, article)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 }
 
 func main() {

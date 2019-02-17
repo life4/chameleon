@@ -1,3 +1,13 @@
-{{range .}}
-    <a href="{{.File}}">{{.Title}}</a>
+{{define "title"}}
+    {{ .Category.Name }}
+{{end}}
+
+{{define "content"}}
+    <ul>
+        {{range .Articles}}
+            <li>
+                <a href="{{.File}}">{{.Title}}</a>
+            </li>
+        {{end}}
+    </ul>
 {{end}}
