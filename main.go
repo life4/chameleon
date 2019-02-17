@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strings"
 	"text/template"
 
 	"github.com/BurntSushi/toml"
@@ -16,18 +17,18 @@ import (
 
 const (
 	viewLinkT     = "https://github.com/{{.Repo}}/blob/{{.Branch}}/{{.Path}}"
-	rawLinkT      = "https://raw.githubusercontent.com/{{.Repo}}/{{.Branch}}/{{.Path}}"
+	rawLinkT      = "https://raw.githubusercontent.com/{{.Repo}}/{{.Branch}}/{{.Dir}}"
 	editLinkT     = "https://github.com/{{.Repo}}/edit/{{.Branch}}/{{.Path}}"
 	feedbackLinkT = "https://github.com/{{.Repo}}/issues/new"
 	dirAPILinkT   = "https://api.github.com/repos/{{.Repo}}/contents/{{.Dir}}?ref={{.Branch}}"
 )
 
-// Category is struct with all information about content in given category
+// Category is a struct with all information about content in given category
 type Category struct {
 	Repo, Branch, Dir, Name, Ext string
 }
 
-func (category *Category) makeLink(linkTemplate string) (content string, err error) {
+func (category *Category) makeLink(linkTemplate string) (string, error) {
 	t, err := template.New("linkTemplate").Parse(linkTemplate)
 	if err != nil {
 		return "", err
@@ -38,6 +39,40 @@ func (category *Category) makeLink(linkTemplate string) (content string, err err
 		return "", err
 	}
 	return buffer.String(), nil
+}
+
+// Article is a strct with article title and content
+type Article struct {
+	Category
+	File  string
+	Title string
+	Raw   string
+}
+
+func (article *Article) getRaw() (string, error) {
+	link, err := article.makeLink(rawLinkT)
+	if err != nil {
+		return "", err
+	}
+	link += "/" + article.File
+	res, err := http.Get(link)
+	if err != nil {
+		return "", err
+	}
+	content, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		return "", err
+	}
+	return string(content), nil
+}
+
+func (article *Article) getTitle() string {
+	title := strings.Split(article.Raw, "\n")[0]
+	if strings.Index(title, "# ") != 0 {
+		return article.File
+	}
+	return title[2:]
 }
 
 // Config is the TOML config with attached handlers
@@ -83,10 +118,22 @@ func (config *Config) handleCategory(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	namesQuery := gjson.Get(string(content), "#.name")
-	var names []string
-	for _, name := range namesQuery.Array() {
-		names = append(names, name.String())
+	names := gjson.Get(string(content), "#.name")
+	var articles []Article
+	var article Article
+	for _, name := range names.Array() {
+		article = Article{
+			Category: category,
+			File:     name.String(),
+		}
+		article.Raw, err = article.getRaw()
+		if err != nil {
+			log.Fatal(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		article.Title = article.getTitle()
+		articles = append(articles, article)
 	}
 
 	t, err := template.ParseFiles("templates/category.html")
@@ -95,7 +142,7 @@ func (config *Config) handleCategory(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	t.Execute(w, names)
+	t.Execute(w, articles)
 }
 
 func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
