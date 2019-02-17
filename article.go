@@ -12,6 +12,7 @@ type Article struct {
 	File  string
 	Title string
 	Raw   string
+	HTML  string
 }
 
 func (article *Article) getRaw() (string, error) {

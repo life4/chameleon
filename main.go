@@ -9,6 +9,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/gorilla/mux"
+	blackfriday "gopkg.in/russross/blackfriday.v2"
 )
 
 const (
@@ -59,7 +60,34 @@ func (config *Config) handleCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
-	// ...
+	vars := mux.Vars(r)
+	categorySlug := vars["category"]
+	category, ok := config.Categories[categorySlug]
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	article := Article{
+		Category: category,
+		File:     vars["article"],
+	}
+	raw, err := article.getRaw()
+	if err != nil {
+		log.Fatal(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	article.Raw = raw
+	article.Title = article.getTitle()
+	article.HTML = string(blackfriday.Run([]byte(raw)))
+
+	t, err := template.ParseFiles("templates/article.html")
+	if err != nil {
+		log.Fatal(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	t.Execute(w, article)
 }
 
 func main() {
