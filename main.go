@@ -1,13 +1,11 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"sort"
-	"strings"
 	"text/template"
 
 	"github.com/BurntSushi/toml"
@@ -22,58 +20,6 @@ const (
 	feedbackLinkT = "https://github.com/{{.Repo}}/issues/new"
 	dirAPILinkT   = "https://api.github.com/repos/{{.Repo}}/contents/{{.Dir}}?ref={{.Branch}}"
 )
-
-// Category is a struct with all information about content in given category
-type Category struct {
-	Repo, Branch, Dir, Name, Ext string
-}
-
-func (category *Category) makeLink(linkTemplate string) (string, error) {
-	t, err := template.New("linkTemplate").Parse(linkTemplate)
-	if err != nil {
-		return "", err
-	}
-	buffer := &bytes.Buffer{}
-	err = t.Execute(buffer, *category)
-	if err != nil {
-		return "", err
-	}
-	return buffer.String(), nil
-}
-
-// Article is a strct with article title and content
-type Article struct {
-	Category
-	File  string
-	Title string
-	Raw   string
-}
-
-func (article *Article) getRaw() (string, error) {
-	link, err := article.makeLink(rawLinkT)
-	if err != nil {
-		return "", err
-	}
-	link += "/" + article.File
-	res, err := http.Get(link)
-	if err != nil {
-		return "", err
-	}
-	content, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
-	if err != nil {
-		return "", err
-	}
-	return string(content), nil
-}
-
-func (article *Article) getTitle() string {
-	title := strings.Split(article.Raw, "\n")[0]
-	if strings.Index(title, "# ") != 0 {
-		return article.File
-	}
-	return title[2:]
-}
 
 // Config is the TOML config with attached handlers
 type Config struct {
