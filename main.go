@@ -13,11 +13,8 @@ import (
 )
 
 const (
-	viewLinkT     = "https://github.com/{{.Repo}}/blob/{{.Branch}}/{{.Path}}"
-	rawLinkT      = "https://raw.githubusercontent.com/{{.Repo}}/{{.Branch}}/{{.Dir}}"
-	editLinkT     = "https://github.com/{{.Repo}}/edit/{{.Branch}}/{{.Path}}"
-	feedbackLinkT = "https://github.com/{{.Repo}}/issues/new"
-	dirAPILinkT   = "https://api.github.com/repos/{{.Repo}}/contents/{{.Dir}}?ref={{.Branch}}"
+	rawLinkT    = "https://raw.githubusercontent.com/{{.Repo}}/{{.Branch}}/{{.Dir}}"
+	dirAPILinkT = "https://api.github.com/repos/{{.Repo}}/contents/{{.Dir}}?ref={{.Branch}}"
 )
 
 // Config is the TOML config with attached handlers

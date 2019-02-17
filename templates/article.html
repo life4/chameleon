@@ -5,3 +5,25 @@
 {{define "content"}}
     {{ .HTML }}
 {{end}}
+
+{{define "footer"}}
+    <a href="https://github.com/{{.Repo}}/blob/{{.Branch}}/{{.Dir}}/{{.File}}" class="btn btn-dark" target="_blank">
+        <i class="far fa-eye"></i>
+        Read on Github
+    <a>
+
+    <a href="https://github.com/{{.Repo}}/edit/{{.Branch}}/{{.Dir}}/{{.File}}" class="btn btn-dark" target="_blank">
+        <i class="far fa-edit"></i>
+        Edit
+    <a>
+
+    <a href="https://github.com/{{.Repo}}/issues/new" class="btn btn-dark" target="_blank">
+        <i class="far fa-comment"></i>
+        Comment
+    <a>
+
+    <a href="https://raw.githubusercontent.com/{{.Repo}}/{{.Branch}}/{{.Dir}}/{{.File}}" class="btn btn-dark" target="_blank">
+        <i class="fas fa-code"></i>
+        View source
+    <a>
+{{end}}
