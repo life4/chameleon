@@ -2,6 +2,16 @@
     {{ .Category.Name }}
 {{end}}
 
+{{define "header"}}
+    <a href="/" class="btn btn-dark">
+        <i class="fas fa-chevron-left"></i>
+        Categories
+    <a>
+    <h1>
+        {{ .Category.Name }}
+    </h1>
+{{end}}
+
 {{define "content"}}
     <ul>
         {{range .Articles}}

@@ -2,6 +2,16 @@
     {{ .Title }}
 {{end}}
 
+{{define "header"}}
+    <a href="/{{ .Slug }}/" class="btn btn-dark">
+        <i class="fas fa-chevron-left"></i>
+        {{ .Name }}
+    <a>
+    <h1>
+        {{ .Title }}
+    </h1>
+{{end}}
+
 {{define "content"}}
     {{ .HTML }}
 {{end}}

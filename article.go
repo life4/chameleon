@@ -38,5 +38,6 @@ func (article *Article) getTitle() string {
 	if strings.Index(title, "# ") != 0 {
 		return article.File
 	}
+	article.Raw = strings.TrimPrefix(article.Raw, title)
 	return title[2:]
 }

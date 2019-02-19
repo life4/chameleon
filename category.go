@@ -11,7 +11,7 @@ import (
 
 // Category is a struct with all information about content in given category
 type Category struct {
-	Repo, Branch, Dir, Name, Ext string
+	Repo, Branch, Dir, Name, Ext, Slug string
 }
 
 func (category *Category) makeLink(linkTemplate string) (string, error) {

@@ -74,6 +74,7 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+	category.Slug = categorySlug
 	article := Article{
 		Category: category,
 		File:     vars["article"],
@@ -86,7 +87,7 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 	}
 	article.Raw = raw
 	article.Title = article.getTitle()
-	article.HTML = string(blackfriday.Run([]byte(raw)))
+	article.HTML = string(blackfriday.Run([]byte(article.Raw)))
 
 	t, err := template.ParseFiles("templates/base.html", "templates/article.html")
 	if err != nil {

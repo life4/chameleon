@@ -24,7 +24,7 @@
         text-decoration: none;
       }
 
-      .footer {
+      .footer, .header {
         padding: 40px;
         text-align: center;
       }
@@ -32,6 +32,13 @@
   </head>
 
   <body>
+
+    <div class="container-fluid bg-dark text-white header">
+      <div class="container">
+        {{block "header" .}}
+        {{end}}
+      </div>
+    </div>
 
     <div class="container-fluid">
       <div class="container">
