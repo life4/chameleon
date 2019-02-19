@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io/ioutil"
 	"net/http"
+	"sort"
 	"sync"
 	"text/template"
 
@@ -68,6 +69,10 @@ func (category *Category) getArticles() (articles []Article, err error) {
 	for article := range articlesChan {
 		articles = append(articles, article)
 	}
+
+	sort.Slice(articles, func(i, j int) bool {
+		return articles[i].Title < articles[j].Title
+	})
 
 	return articles, nil
 }

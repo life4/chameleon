@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Article is a strct with article title and content
+// Article is a struct with article title and content
 type Article struct {
 	Category
 	File  string
