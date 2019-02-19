@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"sync"
@@ -61,7 +60,6 @@ func (category *Category) getArticles() (articles []Article, err error) {
 			defer wg.Done()
 			article.init()
 			articlesChan <- article
-			fmt.Println(1)
 		}(article)
 	}
 	wg.Wait()
