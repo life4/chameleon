@@ -41,3 +41,13 @@ func (article *Article) getTitle() string {
 	article.Raw = strings.TrimPrefix(article.Raw, title)
 	return title[2:]
 }
+
+func (article *Article) init() error {
+	raw, err := article.getRaw()
+	if err != nil {
+		return err
+	}
+	article.Raw = raw
+	article.Title = article.getTitle()
+	return nil
+}

@@ -2,8 +2,10 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"sync"
 	"text/template"
 
 	"github.com/tidwall/gjson"
@@ -33,6 +35,7 @@ func (category *Category) getArticles() (articles []Article, err error) {
 		return
 	}
 
+	// get filenames
 	res, err := http.Get(link)
 	if err != nil {
 		return
@@ -43,18 +46,30 @@ func (category *Category) getArticles() (articles []Article, err error) {
 		return
 	}
 	names := gjson.Get(string(content), "#.name")
+
+	// get content
+	var wg sync.WaitGroup
 	var article Article
+	articlesChan := make(chan Article, len(names.Array()))
 	for _, name := range names.Array() {
+		wg.Add(1)
 		article = Article{
 			Category: *category,
 			File:     name.String(),
 		}
-		article.Raw, err = article.getRaw()
-		if err != nil {
-			return
-		}
-		article.Title = article.getTitle()
+		go func(article Article) {
+			defer wg.Done()
+			article.init()
+			articlesChan <- article
+			fmt.Println(1)
+		}(article)
+	}
+	wg.Wait()
+
+	close(articlesChan)
+	for article := range articlesChan {
 		articles = append(articles, article)
 	}
+
 	return articles, nil
 }
