@@ -28,8 +28,25 @@ func (config *Config) handleCategories(w http.ResponseWriter, r *http.Request) {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
-	// ...
-	w.WriteHeader(http.StatusOK)
+	var categories []Category
+	var category Category
+	for _, key := range keys {
+		category = config.Categories[key]
+		category.Slug = key
+		categories = append(categories, category)
+	}
+
+	t, err := template.ParseFiles("templates/base.html", "templates/categories.html")
+	if err != nil {
+		log.Fatal(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	err = t.Execute(w, categories)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 }
 
 func (config *Config) handleCategory(w http.ResponseWriter, r *http.Request) {

@@ -1,0 +1,19 @@
+{{define "title"}}
+    Categories
+{{end}}
+
+{{define "header"}}
+    <h1>
+        Categories
+    </h1>
+{{end}}
+
+{{define "content"}}
+    <ul>
+        {{range .}}
+            <li>
+                <a href="/{{ .Slug }}/">{{ .Name }}</a>
+            </li>
+        {{end}}
+    </ul>
+{{end}}

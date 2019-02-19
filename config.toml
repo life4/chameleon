@@ -4,3 +4,10 @@ branch = "master"
 dir = "notes-ru"
 name = "Russian Articles"
 ext = "md"
+
+[categories.eng]
+repo = "orsinium/notes"
+branch = "master"
+dir = "notes-en"
+name = "English Articles"
+ext = "md"
