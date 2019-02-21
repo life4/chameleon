@@ -1,6 +1,11 @@
 ## Usage
 
-First of all, copy and edit config.
+First of all, copy and edit config:
+
+```bash
+cp config{_example,}.toml
+nano config.toml
+```
 
 Run from source:
 
