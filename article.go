@@ -13,7 +13,7 @@ type Article struct {
 	Title     string
 	Raw       string
 	HTML      string
-	ShortName string
+	Slug string
 }
 
 func (article *Article) getRaw() (string, error) {
