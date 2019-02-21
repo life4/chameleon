@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"sort"
+	"strings"
 	"sync"
 	"text/template"
 
@@ -56,6 +57,7 @@ func (category *Category) getArticles() (articles []Article, err error) {
 		article = Article{
 			Category: *category,
 			File:     name.String(),
+			Slug:     strings.TrimSuffix(name.String(), category.Ext),
 		}
 		go func(article Article) {
 			defer wg.Done()

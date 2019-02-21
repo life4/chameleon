@@ -94,9 +94,11 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	category.Slug = categorySlug
+	file := vars["article"] + category.Ext
 	article := Article{
 		Category: category,
-		File:     vars["article"],
+		File:     file,
+		Slug:     vars["article"],
 	}
 	raw, err := article.getRaw()
 	if err != nil {
@@ -131,7 +133,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", conf.handleCategories)
 	r.HandleFunc("/{category}/", conf.handleCategory)
-	r.HandleFunc("/{category}/{article}", conf.handleArticle)
+	r.HandleFunc("/{category}/{article}/", conf.handleArticle)
 
 	http.Handle(conf.Root, r)
 	fmt.Println("Ready")
