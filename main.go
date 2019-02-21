@@ -96,9 +96,9 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 	category.Slug = categorySlug
 	file := vars["article"] + category.Ext
 	article := Article{
-		Category: category,
-		File:     file,
-		Slug:     vars["article"],
+		Category:  category,
+		File:      file,
+		ShortName: vars["article"],
 	}
 	raw, err := article.getRaw()
 	if err != nil {

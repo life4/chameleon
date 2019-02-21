@@ -8,16 +8,16 @@ import (
 
 // Article is a struct with article title and content
 type Article struct {
-	Category
-	File  string
-	Title string
-	Raw   string
-	HTML  string
-	Slug  string
+	Category  Category
+	File      string
+	Title     string
+	Raw       string
+	HTML      string
+	ShortName string
 }
 
 func (article *Article) getRaw() (string, error) {
-	link, err := article.makeLink(rawLinkT)
+	link, err := article.Category.makeLink(rawLinkT)
 	if err != nil {
 		return "", err
 	}

@@ -55,9 +55,9 @@ func (category *Category) getArticles() (articles []Article, err error) {
 	for _, name := range names.Array() {
 		wg.Add(1)
 		article = Article{
-			Category: *category,
-			File:     name.String(),
-			Slug:     strings.TrimSuffix(name.String(), category.Ext),
+			Category:  *category,
+			File:      name.String(),
+			ShortName: strings.TrimSuffix(name.String(), category.Ext),
 		}
 		go func(article Article) {
 			defer wg.Done()
