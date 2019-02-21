@@ -1,0 +1,13 @@
+# /lib/systemd/system/chameleon.service
+
+[Unit]
+Description=chameleon
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5s
+ExecStart=/full/path/to/bin/chameleon
+
+[Install]
+WantedBy=multi-user.target
