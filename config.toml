@@ -1,13 +1,16 @@
+listen = "127.0.0.1:1337"
+root = "/"
+
 [categories.rus]
 repo = "orsinium/notes"
 branch = "master"
 dir = "notes-ru"
 name = "Russian Articles"
-ext = "md"
+ext = ".md"
 
 [categories.eng]
 repo = "orsinium/notes"
 branch = "master"
 dir = "notes-en"
 name = "English Articles"
-ext = "md"
+ext = ".md"

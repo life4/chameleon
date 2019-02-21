@@ -19,6 +19,8 @@ const (
 
 // Config is the TOML config with attached handlers
 type Config struct {
+	Listen     string
+	Root       string
 	Categories map[string]Category
 }
 
@@ -131,7 +133,7 @@ func main() {
 	r.HandleFunc("/{category}/", conf.handleCategory)
 	r.HandleFunc("/{category}/{article}", conf.handleArticle)
 
-	http.Handle("/", r)
+	http.Handle(conf.Root, r)
 	fmt.Println("Ready")
-	log.Fatal(http.ListenAndServe("127.0.0.1:1337", nil))
+	log.Fatal(http.ListenAndServe(conf.Listen, nil))
 }
