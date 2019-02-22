@@ -126,8 +126,8 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	path := pflag.String("config", "config.toml", "path to config file")
-	listen := pflag.String("listen", "", "server and port to listen (value from config by default)")
+	path := pflag.StringP("config", "c", "config.toml", "path to config file")
+	listen := pflag.StringP("listen", "l", "", "server and port to listen (value from config by default)")
 	pflag.Parse()
 
 	var conf Config
