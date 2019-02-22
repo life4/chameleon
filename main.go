@@ -7,6 +7,8 @@ import (
 	"sort"
 	"text/template"
 
+	"github.com/spf13/pflag"
+
 	"github.com/BurntSushi/toml"
 	"github.com/gorilla/mux"
 	blackfriday "gopkg.in/russross/blackfriday.v2"
@@ -124,10 +126,17 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	path := pflag.String("config", "config.toml", "path to config file")
+	listen := pflag.String("listen", "", "server and port to listen (value from config by default)")
+	pflag.Parse()
+
 	var conf Config
-	if _, err := toml.DecodeFile("./config.toml", &conf); err != nil {
+	if _, err := toml.DecodeFile(*path, &conf); err != nil {
 		log.Fatal(err)
 		return
+	}
+	if *listen != "" {
+		conf.Listen = *listen
 	}
 
 	r := mux.NewRouter()
