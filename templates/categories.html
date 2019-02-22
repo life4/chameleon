@@ -9,11 +9,15 @@
 {{end}}
 
 {{define "content"}}
-    <ul>
+    <div class="row">
         {{range .}}
-            <li>
-                <a href="/{{ .Slug }}/">{{ .Name }}</a>
-            </li>
+            <div class="col-sm">
+                <a href="/{{ .Slug }}/" class="card btn btn-secondary bg-secondary text-white">
+                    <div class="card-body">
+                        {{ .Name }}
+                    </div>
+                </a>
+            </div>
         {{end}}
-    </ul>
+    </div>
 {{end}}

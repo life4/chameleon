@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strings"
 	"text/template"
 
 	"github.com/spf13/pflag"
@@ -87,6 +88,17 @@ func (config *Config) handleCategory(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (config *Config) handleArticleRedirect(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	categorySlug := vars["category"]
+	category, ok := config.Categories[categorySlug]
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	http.Redirect(w, r, strings.TrimSuffix(vars["article"], category.Ext)+"/", http.StatusPermanentRedirect)
+}
+
 func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	categorySlug := vars["category"]
@@ -95,6 +107,13 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+
+	if strings.HasSuffix(vars["article"], category.Ext) {
+		newURL := fmt.Sprintf("/%s/%s/", categorySlug, strings.TrimSuffix(vars["article"], category.Ext))
+		http.Redirect(w, r, newURL, http.StatusPermanentRedirect)
+		return
+	}
+
 	category.Slug = categorySlug
 	file := vars["article"] + category.Ext
 	article := Article{
@@ -142,6 +161,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", conf.handleCategories)
 	r.HandleFunc("/{category}/", conf.handleCategory)
+	r.HandleFunc("/{category}/{article}", conf.handleArticleRedirect)
 	r.HandleFunc("/{category}/{article}/", conf.handleArticle)
 
 	http.Handle(conf.Root, r)
