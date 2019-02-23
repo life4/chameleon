@@ -108,7 +108,28 @@ func (config *Config) handleArticleRedirect(w http.ResponseWriter, r *http.Reque
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	http.Redirect(w, r, strings.TrimSuffix(vars["article"], category.Ext)+"/", http.StatusPermanentRedirect)
+
+	// if there is no extension then it is probably article without trailing slash (/lol -> /lol/)
+	if !strings.ContainsRune(vars["article"], '.') {
+		http.Redirect(w, r, vars["article"]+"/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	// if it has extension of article then it is definetly article (/lol.md -> /lol/)
+	if strings.HasSuffix(vars["article"], category.Ext) {
+		http.Redirect(w, r, strings.TrimSuffix(vars["article"], category.Ext)+"/", http.StatusTemporaryRedirect)
+	}
+
+	// if it has different extension then it is file (/lol.jpg -> githubusercontent.com/.../lol.jpg)
+	link, err := category.makeLink(rawLinkT)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Fatal(err)
+		return
+	}
+	link += "/" + vars["article"]
+	http.Redirect(w, r, link, http.StatusTemporaryRedirect)
+
 }
 
 func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
