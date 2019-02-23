@@ -8,8 +8,11 @@ import (
 	"sort"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/spf13/pflag"
+	cache "github.com/victorspringer/http-cache"
+	"github.com/victorspringer/http-cache/adapter/memory"
 
 	"github.com/BurntSushi/toml"
 	"github.com/gorilla/mux"
@@ -171,13 +174,31 @@ func main() {
 	}
 	conf.Templates = *templatesPath
 
+	memcached, err := memory.NewAdapter(
+		memory.AdapterWithAlgorithm(memory.LRU),
+		memory.AdapterWithCapacity(20),
+	)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	cacheClient, err := cache.NewClient(
+		cache.ClientWithAdapter(memcached),
+		cache.ClientWithTTL(10*time.Minute),
+	)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
 	r := mux.NewRouter()
 	r.HandleFunc("/", conf.handleCategories)
 	r.HandleFunc("/{category}/", conf.handleCategory)
 	r.HandleFunc("/{category}/{article}", conf.handleArticleRedirect)
 	r.HandleFunc("/{category}/{article}/", conf.handleArticle)
 
-	http.Handle(conf.Root, r)
+	http.Handle(conf.Root, cacheClient.Middleware(r))
 	fmt.Printf("Ready to get connections on %s%s\n", conf.Listen, conf.Root)
 	log.Fatal(http.ListenAndServe(conf.Listen, nil))
 }
