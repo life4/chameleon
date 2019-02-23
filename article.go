@@ -95,6 +95,7 @@ func (article *Article) lintHTML() ([]core.Alert, error) {
 	config := core.NewConfig()
 	config.GBaseStyles = []string{"proselint", "write-good", "Joblint", "Spelling"}
 	config.MinAlertLevel = 0
+	config.InExt = ".html"
 	linter := lint.Linter{Config: config, CheckManager: check.NewManager(config)}
 	files, _ := linter.LintString(article.HTML)
 	return files[0].SortedAlerts(), nil
