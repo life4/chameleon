@@ -1,3 +1,7 @@
+# Chamelon
+
+Chameleon is web application that reflects content from markdown files from Github.
+
 ## Usage
 
 First of all, copy and edit config:
