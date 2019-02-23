@@ -1,7 +1,9 @@
 listen = "127.0.0.1:1337"
 root = "/"
+
 cache = true
 contributors = true
+lint = true
 
 [categories.rus]
 repo = "orsinium/notes"

@@ -27,12 +27,15 @@ const (
 
 // Config is the TOML config with attached handlers
 type Config struct {
-	Listen       string
-	Root         string
-	Templates    string
+	Listen    string
+	Root      string
+	Templates string
+
 	Cache        bool
 	Contributors bool
-	Categories   map[string]Category
+	Lint         bool
+
+	Categories map[string]Category
 }
 
 func (config *Config) handleCategories(w http.ResponseWriter, r *http.Request) {
@@ -175,13 +178,15 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	alerts, err := article.lintHTML()
-	if err != nil {
-		log.Fatal(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	if config.Lint {
+		alerts, err := article.lintHTML()
+		if err != nil {
+			log.Fatal(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		article.Alerts = alerts
 	}
-	article.Alerts = alerts
 
 	t, err := template.ParseFiles(
 		path.Join(config.Templates, "base.html"),
