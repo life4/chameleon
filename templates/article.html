@@ -57,4 +57,33 @@
       <img src="{{ .Avatar }}" alt="{{ .Login }}">
     {{end}}
   </div>
+
+  <div class="container-fluid bg-dark text-white footer" style="text-align: left">
+    <h2>Alerts</h2>
+    <table class="table table-sm">
+      <tr>
+        <th>
+          line
+        </th>
+        <th>
+          level
+        </th>
+        <th>
+          message
+        </th>
+        <th>
+          check
+        </th>
+      </tr>
+      {{ range .Alerts }}
+        <tr>
+          <td>{{ .Line }}:{{ .Span }}</td>
+          <td class="level-{{ .Severity }}">{{ .Severity }}</td>
+          <td>{{ .Message }}</td>
+          <td>{{ .Check }}</td>
+        </tr>
+      {{end}}
+    </table>
+  </div>
+
 {{end}}

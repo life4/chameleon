@@ -6,6 +6,9 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/errata-ai/vale/check"
+	"github.com/errata-ai/vale/core"
+	"github.com/errata-ai/vale/lint"
 	"github.com/tidwall/gjson"
 )
 
@@ -23,6 +26,7 @@ type Article struct {
 	HTML     string
 	Slug     string
 	Authors  []Author
+	Alerts   []core.Alert
 }
 
 func (article *Article) getRaw() (string, error) {
@@ -85,6 +89,15 @@ func (article *Article) getTitle() string {
 	}
 	article.Raw = strings.TrimPrefix(article.Raw, title)
 	return title[2:]
+}
+
+func (article *Article) lintHTML() ([]core.Alert, error) {
+	config := core.NewConfig()
+	config.GBaseStyles = []string{"proselint", "write-good", "Joblint", "Spelling"}
+	config.MinAlertLevel = 0
+	linter := lint.Linter{Config: config, CheckManager: check.NewManager(config)}
+	files, _ := linter.LintString(article.HTML)
+	return files[0].SortedAlerts(), nil
 }
 
 func (article *Article) init() error {

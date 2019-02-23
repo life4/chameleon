@@ -27,10 +27,12 @@ const (
 
 // Config is the TOML config with attached handlers
 type Config struct {
-	Listen     string
-	Root       string
-	Templates  string
-	Categories map[string]Category
+	Listen       string
+	Root         string
+	Templates    string
+	Cache        bool
+	Contributors bool
+	Categories   map[string]Category
 }
 
 func (config *Config) handleCategories(w http.ResponseWriter, r *http.Request) {
@@ -164,12 +166,22 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 	article.Title = article.getTitle()
 	article.HTML = string(blackfriday.Run([]byte(article.Raw)))
 
-	authors, err := article.getAuthors()
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		article.Authors = authors
+	if config.Contributors {
+		authors, err := article.getAuthors()
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			article.Authors = authors
+		}
 	}
+
+	alerts, err := article.lintHTML()
+	if err != nil {
+		log.Fatal(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	article.Alerts = alerts
 
 	t, err := template.ParseFiles(
 		path.Join(config.Templates, "base.html"),
@@ -203,31 +215,36 @@ func main() {
 	}
 	conf.Templates = *templatesPath
 
-	memcached, err := memory.NewAdapter(
-		memory.AdapterWithAlgorithm(memory.LRU),
-		memory.AdapterWithCapacity(20),
-	)
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-
-	cacheClient, err := cache.NewClient(
-		cache.ClientWithAdapter(memcached),
-		cache.ClientWithTTL(10*time.Minute),
-	)
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-
 	r := mux.NewRouter()
 	r.HandleFunc("/", conf.handleCategories)
 	r.HandleFunc("/{category}/", conf.handleCategory)
 	r.HandleFunc("/{category}/{article}", conf.handleArticleRedirect)
 	r.HandleFunc("/{category}/{article}/", conf.handleArticle)
 
-	http.Handle(conf.Root, cacheClient.Middleware(r))
+	if conf.Cache {
+		memcached, err := memory.NewAdapter(
+			memory.AdapterWithAlgorithm(memory.LRU),
+			memory.AdapterWithCapacity(20),
+		)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+
+		cacheClient, err := cache.NewClient(
+			cache.ClientWithAdapter(memcached),
+			cache.ClientWithTTL(10*time.Minute),
+		)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+
+		http.Handle(conf.Root, cacheClient.Middleware(r))
+	} else {
+		http.Handle(conf.Root, r)
+	}
+
 	fmt.Printf("Ready to get connections on %s%s\n", conf.Listen, conf.Root)
 	log.Fatal(http.ListenAndServe(conf.Listen, nil))
 }
