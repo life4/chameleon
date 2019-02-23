@@ -1,0 +1,13 @@
+# https://EditorConfig.org
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+
+[*.html]
+indent_size = 2
+
+[*.go]
+indent_style = tab

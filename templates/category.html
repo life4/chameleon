@@ -1,23 +1,23 @@
 {{define "title"}}
-    {{ .Category.Name }}
+  {{ .Category.Name }}
 {{end}}
 
 {{define "header"}}
-    <a href="/" class="btn btn-dark">
-        <i class="fas fa-chevron-left"></i>
-        Categories
-    <a>
-    <h1>
-        {{ .Category.Name }}
-    </h1>
+  <a href="/" class="btn btn-dark">
+    <i class="fas fa-chevron-left"></i>
+    Categories
+  <a>
+  <h1>
+    {{ .Category.Name }}
+  </h1>
 {{end}}
 
 {{define "content"}}
-    <ul>
-        {{range .Articles}}
-            <li>
-                <a href="{{ .Slug }}/">{{ .Title }}</a>
-            </li>
-        {{end}}
-    </ul>
+  <ul>
+    {{range .Articles}}
+      <li>
+        <a href="{{ .Slug }}/">{{ .Title }}</a>
+      </li>
+    {{end}}
+  </ul>
 {{end}}

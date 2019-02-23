@@ -1,50 +1,50 @@
 {{define "title"}}
-    {{ .Title }}
+  {{ .Title }}
 {{end}}
 
 {{define "header"}}
-    <a href="/{{ .Category.Slug }}/" class="btn btn-dark">
-        <i class="fas fa-chevron-left"></i>
-        {{ .Category.Name }}
-    <a>
-    <h1>
-        {{ .Title }}
-    </h1>
+  <a href="/{{ .Category.Slug }}/" class="btn btn-dark">
+    <i class="fas fa-chevron-left"></i>
+    {{ .Category.Name }}
+  <a>
+  <h1>
+    {{ .Title }}
+  </h1>
 {{end}}
 
 {{define "content"}}
-    {{ .HTML }}
+  {{ .HTML }}
 {{end}}
 
 {{define "footer"}}
-    <a href="https://github.com/{{.Category.Repo}}/blob/{{.Category.Branch}}/{{.Category.Dir}}/{{.File}}" class="btn btn-dark"
-    target="_blank">
-        <i class="far fa-eye"></i>
-        Read on Github
-    <a>
+  <a href="https://github.com/{{.Category.Repo}}/blob/{{.Category.Branch}}/{{.Category.Dir}}/{{.File}}" class="btn btn-dark"
+  target="_blank">
+    <i class="far fa-eye"></i>
+    Read on Github
+  <a>
 
-    <a href="https://github.com/{{.Category.Repo}}/edit/{{.Category.Branch}}/{{.Category.Dir}}/{{.File}}" class="btn btn-dark"
-    target="_blank">
-        <i class="far fa-edit"></i>
-        Edit
-    <a>
+  <a href="https://github.com/{{.Category.Repo}}/edit/{{.Category.Branch}}/{{.Category.Dir}}/{{.File}}" class="btn btn-dark"
+  target="_blank">
+    <i class="far fa-edit"></i>
+    Edit
+  <a>
 
-    <a href="https://github.com/{{.Category.Repo}}/issues/new" class="btn btn-dark" target="_blank">
-        <i class="far fa-comment"></i>
-        Comment
-    <a>
+  <a href="https://github.com/{{.Category.Repo}}/issues/new" class="btn btn-dark" target="_blank">
+    <i class="far fa-comment"></i>
+    Comment
+  <a>
 
-    <a href="https://raw.githubusercontent.com/{{.Category.Repo}}/{{.Category.Branch}}/{{.Category.Dir}}/{{.File}}" class="btn btn-dark"
-    target="_blank">
-        <i class="fas fa-code"></i>
-        View source
-    <a>
+  <a href="https://raw.githubusercontent.com/{{.Category.Repo}}/{{.Category.Branch}}/{{.Category.Dir}}/{{.File}}" class="btn btn-dark"
+  target="_blank">
+    <i class="fas fa-code"></i>
+    View source
+  <a>
 
-    <div>
-        <a href="/{{ .Category.Slug }}/" class="btn btn-dark">
-            <i class="fas fa-chevron-left"></i>
-            {{ .Category.Name }}
-        <a>
-    </div>
+  <div>
+    <a href="/{{ .Category.Slug }}/" class="btn btn-dark">
+      <i class="fas fa-chevron-left"></i>
+      {{ .Category.Name }}
+    <a>
+  </div>
 
 {{end}}
