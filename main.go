@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"path"
 	"sort"
 	"strings"
 	"text/template"
@@ -24,6 +25,7 @@ const (
 type Config struct {
 	Listen     string
 	Root       string
+	Templates  string
 	Categories map[string]Category
 }
 
@@ -41,7 +43,10 @@ func (config *Config) handleCategories(w http.ResponseWriter, r *http.Request) {
 		categories = append(categories, category)
 	}
 
-	t, err := template.ParseFiles("templates/base.html", "templates/categories.html")
+	t, err := template.ParseFiles(
+		path.Join(config.Templates, "base.html"),
+		path.Join(config.Templates, "categories.html"),
+	)
 	if err != nil {
 		log.Fatal(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -69,7 +74,10 @@ func (config *Config) handleCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	t, err := template.ParseFiles("templates/base.html", "templates/category.html")
+	t, err := template.ParseFiles(
+		path.Join(config.Templates, "base.html"),
+		path.Join(config.Templates, "category.html"),
+	)
 	if err != nil {
 		log.Fatal(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -131,7 +139,10 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 	article.Title = article.getTitle()
 	article.HTML = string(blackfriday.Run([]byte(article.Raw)))
 
-	t, err := template.ParseFiles("templates/base.html", "templates/article.html")
+	t, err := template.ParseFiles(
+		path.Join(config.Templates, "base.html"),
+		path.Join(config.Templates, "article.html"),
+	)
 	if err != nil {
 		log.Fatal(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -145,18 +156,20 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	path := pflag.StringP("config", "c", "config.toml", "path to config file")
+	configPath := pflag.StringP("config", "c", "config.toml", "path to config file")
+	templatesPath := pflag.StringP("templates", "t", "templates/", "path to templates directory")
 	listen := pflag.StringP("listen", "l", "", "server and port to listen (value from config by default)")
 	pflag.Parse()
 
 	var conf Config
-	if _, err := toml.DecodeFile(*path, &conf); err != nil {
+	if _, err := toml.DecodeFile(*configPath, &conf); err != nil {
 		log.Fatal(err)
 		return
 	}
 	if *listen != "" {
 		conf.Listen = *listen
 	}
+	conf.Templates = *templatesPath
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", conf.handleCategories)
@@ -165,6 +178,6 @@ func main() {
 	r.HandleFunc("/{category}/{article}/", conf.handleArticle)
 
 	http.Handle(conf.Root, r)
-	fmt.Println("Ready")
+	fmt.Printf("Ready to get connections on %s%s\n", conf.Listen, conf.Root)
 	log.Fatal(http.ListenAndServe(conf.Listen, nil))
 }
