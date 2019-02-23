@@ -17,14 +17,12 @@
 {{end}}
 
 {{define "footer"}}
-  <a href="https://github.com/{{.Category.Repo}}/blob/{{.Category.Branch}}/{{.Category.Dir}}/{{.File}}" class="btn btn-dark"
-  target="_blank">
+  <a href="https://github.com/{{.Category.Repo}}/blob/{{.Category.Branch}}/{{.Category.Dir}}/{{.File}}" class="btn btn-dark" target="_blank">
     <i class="fab fa-github"></i>
     Read on Github
   <a>
 
-  <a href="https://github.com/{{.Category.Repo}}/edit/{{.Category.Branch}}/{{.Category.Dir}}/{{.File}}" class="btn btn-dark"
-  target="_blank">
+  <a href="https://github.com/{{.Category.Repo}}/edit/{{.Category.Branch}}/{{.Category.Dir}}/{{.File}}" class="btn btn-dark" target="_blank">
     <i class="far fa-edit"></i>
     Edit
   <a>
@@ -55,7 +53,8 @@
       <h2>Contributors</h2>
       {{ range .Authors }}
         <a href="https://github.com/{{ .Login }}" target="_blank" class="avatar">
-        <img src="{{ .Avatar }}" alt="{{ .Login }}">
+          <img src="{{ .Avatar }}" alt="{{ .Login }}">
+        </a>
       {{end}}
     </div>
   {{end}}
@@ -64,10 +63,19 @@
     <div class="container-fluid bg-dark text-white footer">
       <h2>How can I contribute?</h2>
       <p>
-        There is output of
+        There is an output of
         <a href="https://github.com/errata-ai/vale" target="_blank">vale linter</a>.
-        Please, help me to fix all these issues to make the article better.
+        Please, help me to fix these issues to make the article better.
+        You can change anything, not only issues from the table.
       </p>
+
+      <div style="margin-bottom: 20px">
+        <a href="https://github.com/{{.Category.Repo}}/edit/{{.Category.Branch}}/{{.Category.Dir}}/{{.File}}" class="btn btn-success" target="_blank">
+          <i class="far fa-heart"></i>
+          Help
+        <a>
+      </div>
+
       <table class="table table-sm" style="text-align: left">
         <tr>
           <th>line</th>
