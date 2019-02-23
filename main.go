@@ -20,8 +20,9 @@ import (
 )
 
 const (
-	rawLinkT    = "https://raw.githubusercontent.com/{{.Repo}}/{{.Branch}}/{{.Dir}}"
-	dirAPILinkT = "https://api.github.com/repos/{{.Repo}}/contents/{{.Dir}}?ref={{.Branch}}"
+	commitsLinkT = "https://api.github.com/repos/{{.Repo}}/commits?sha={{.Branch}}&path={{.Dir}}"
+	rawLinkT     = "https://raw.githubusercontent.com/{{.Repo}}/{{.Branch}}/{{.Dir}}"
+	dirAPILinkT  = "https://api.github.com/repos/{{.Repo}}/contents/{{.Dir}}?ref={{.Branch}}"
 )
 
 // Config is the TOML config with attached handlers
@@ -141,6 +142,13 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 	article.Raw = raw
 	article.Title = article.getTitle()
 	article.HTML = string(blackfriday.Run([]byte(article.Raw)))
+
+	authors, err := article.getAuthors()
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		article.Authors = authors
+	}
 
 	t, err := template.ParseFiles(
 		path.Join(config.Templates, "base.html"),

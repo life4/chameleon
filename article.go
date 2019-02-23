@@ -1,19 +1,28 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"github.com/tidwall/gjson"
 )
+
+// Author is a struct with contributor info
+type Author struct {
+	Login, Avatar string
+}
 
 // Article is a struct with article title and content
 type Article struct {
-	Category  Category
-	File      string
-	Title     string
-	Raw       string
-	HTML      string
-	Slug string
+	Category Category
+	File     string
+	Title    string
+	Raw      string
+	HTML     string
+	Slug     string
+	Authors  []Author
 }
 
 func (article *Article) getRaw() (string, error) {
@@ -32,6 +41,41 @@ func (article *Article) getRaw() (string, error) {
 		return "", err
 	}
 	return string(content), nil
+}
+
+func (article *Article) getAuthors() ([]Author, error) {
+	link, err := article.Category.makeLink(commitsLinkT)
+	if err != nil {
+		return nil, err
+	}
+	link += "/" + article.File
+	res, err := http.Get(link)
+	if err != nil {
+		return nil, err
+	}
+	if res.StatusCode != 200 {
+		return nil, fmt.Errorf("invalid status code: %d (%s)", res.StatusCode, link)
+	}
+	content, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	authorsMap := make(map[string]Author)
+	var login string
+	for _, subtree := range gjson.Get(string(content), "#.author").Array() {
+		login = subtree.Get("login").String()
+		if login != "" {
+			authorsMap[login] = Author{Login: login, Avatar: subtree.Get("avatar_url").String()}
+		}
+	}
+	var authors []Author
+	for _, author := range authorsMap {
+		authors = append(authors, author)
+	}
+
+	return authors, nil
 }
 
 func (article *Article) getTitle() string {
