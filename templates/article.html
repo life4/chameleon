@@ -50,14 +50,11 @@
 
 
 {{block "underground" .}}
-  {{ $length := len .Authors }}
-  {{ if ne $length 0 }}
-    <div class="container-fluid bg-white text-body footer">
-      <h2>Contributors</h2>
-      {{ range .Authors }}
-        <a href="https://github.com/{{ .Login }}" target="_blank" class="avatar">
-        <img src="{{ .Avatar }}" alt="{{ .Login }}">
-      {{end}}
-    </div>
-  {{end}}
+  <div class="container-fluid bg-white text-body footer">
+    <h2>Contributors</h2>
+    {{ range .Authors }}
+      <a href="https://github.com/{{ .Login }}" target="_blank" class="avatar">
+      <img src="{{ .Avatar }}" alt="{{ .Login }}">
+    {{end}}
+  </div>
 {{end}}
