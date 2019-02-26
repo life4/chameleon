@@ -186,11 +186,31 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if config.Views {
-		err := article.incrementViews()
-		if err != nil {
-			log.Fatal(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
+		_, err := r.Cookie("viewed")
+		if err != http.ErrNoCookie {
+			// article already viewed
+			err := article.updateViews()
+			if err != nil {
+				log.Fatal(err)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+		} else {
+			// article hasn't been viewed yet
+			err := article.incrementViews()
+			if err != nil {
+				log.Fatal(err)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			cookie := http.Cookie{
+				Name:   "viewed",
+				Value:  "1",
+				Domain: r.Host,
+				Path:   fmt.Sprintf("/%s/%s/", category.Slug, article.Slug),
+				MaxAge: 3600 * 24,
+			}
+			http.SetCookie(w, &cookie)
 		}
 	}
 
