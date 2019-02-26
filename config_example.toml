@@ -4,6 +4,7 @@ root = "/"
 cache = true
 contributors = true
 lint = true
+views = true
 
 [categories.rus]
 repo = "orsinium/notes"

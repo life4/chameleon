@@ -34,6 +34,7 @@ type Config struct {
 	Cache        bool
 	Contributors bool
 	Lint         bool
+	Views        bool
 
 	Categories map[string]Category
 }
@@ -177,6 +178,15 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 
 	if config.Lint {
 		err := article.updateAlerts()
+		if err != nil {
+			log.Fatal(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	}
+
+	if config.Views {
+		err := article.incrementViews()
 		if err != nil {
 			log.Fatal(err)
 			w.WriteHeader(http.StatusInternalServerError)

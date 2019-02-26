@@ -1,3 +1,4 @@
 # ignore binaries
 chameleon
 config.toml
+.cache

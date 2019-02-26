@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/binary"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,6 +11,8 @@ import (
 	"github.com/errata-ai/vale/check"
 	"github.com/errata-ai/vale/core"
 	"github.com/errata-ai/vale/lint"
+	"github.com/recoilme/pudge"
+	"github.com/recoilme/slowpoke"
 	"github.com/tidwall/gjson"
 )
 
@@ -30,6 +33,8 @@ type Article struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Alerts    []core.Alert
+
+	Views uint32
 }
 
 func (article *Article) updateRaw() error {
@@ -117,4 +122,31 @@ func (article *Article) updateAlerts() error {
 	files, _ := linter.LintString(article.HTML)
 	article.Alerts = files[0].SortedAlerts()
 	return nil
+}
+
+func (article *Article) getFilename() string {
+	return fmt.Sprintf(".cache/%s.db", article.Category.Slug)
+}
+
+func (article *Article) updateViews() error {
+	if article.Views != 0 {
+		return nil
+	}
+	bs, err := slowpoke.Get(article.getFilename(), []byte(article.Slug))
+	if err != nil {
+		return err
+	}
+	article.Views = binary.LittleEndian.Uint32(bs)
+	return nil
+}
+
+func (article *Article) incrementViews() error {
+	err := article.updateViews()
+	if err != pudge.ErrKeyNotFound && err != nil {
+		return err
+	}
+	article.Views++
+	bs := make([]byte, 4)
+	binary.LittleEndian.PutUint32(bs, article.Views)
+	return slowpoke.Set(article.getFilename(), []byte(article.Slug), bs)
 }
