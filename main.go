@@ -159,33 +159,29 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 		File:     file,
 		Slug:     vars["article"],
 	}
-	raw, err := article.getRaw()
+	err := article.updateRaw()
 	if err != nil {
 		log.Fatal(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	article.Raw = raw
 	article.Title = article.getTitle()
 	article.HTML = string(blackfriday.Run([]byte(article.Raw)))
 
 	if config.Contributors {
-		authors, err := article.getAuthors()
+		err := article.updateMetaInfo()
 		if err != nil {
 			fmt.Println(err)
-		} else {
-			article.Authors = authors
 		}
 	}
 
 	if config.Lint {
-		alerts, err := article.lintHTML()
+		err := article.updateAlerts()
 		if err != nil {
 			log.Fatal(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		article.Alerts = alerts
 	}
 
 	t, err := template.ParseFiles(

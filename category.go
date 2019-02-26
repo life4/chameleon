@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"sort"
 	"strings"
@@ -62,7 +63,12 @@ func (category *Category) getArticles() (articles []Article, err error) {
 			}
 			go func(article Article) {
 				defer wg.Done()
-				article.init()
+				err := article.updateRaw()
+				if err != nil {
+					log.Fatal(err)
+					return
+				}
+				article.Title = article.getTitle()
 				articlesChan <- article
 			}(article)
 		}

@@ -29,41 +29,42 @@ type Article struct {
 	Alerts   []core.Alert
 }
 
-func (article *Article) getRaw() (string, error) {
+func (article *Article) updateRaw() error {
 	link, err := article.Category.makeLink(rawLinkT)
 	if err != nil {
-		return "", err
+		return err
 	}
 	link += "/" + article.File
 	res, err := http.Get(link)
 	if err != nil {
-		return "", err
+		return err
 	}
 	content, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		return "", err
+		return err
 	}
-	return string(content), nil
+	article.Raw = string(content)
+	return nil
 }
 
-func (article *Article) getAuthors() ([]Author, error) {
+func (article *Article) updateMetaInfo() error {
 	link, err := article.Category.makeLink(commitsLinkT)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	link += "/" + article.File
 	res, err := http.Get(link)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if res.StatusCode != 200 {
-		return nil, fmt.Errorf("invalid status code: %d (%s)", res.StatusCode, link)
+		return fmt.Errorf("invalid status code: %d (%s)", res.StatusCode, link)
 	}
 	content, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	authorsMap := make(map[string]Author)
@@ -78,8 +79,8 @@ func (article *Article) getAuthors() ([]Author, error) {
 	for _, author := range authorsMap {
 		authors = append(authors, author)
 	}
-
-	return authors, nil
+	article.Authors = authors
+	return nil
 }
 
 func (article *Article) getTitle() string {
@@ -91,22 +92,13 @@ func (article *Article) getTitle() string {
 	return title[2:]
 }
 
-func (article *Article) lintHTML() ([]core.Alert, error) {
+func (article *Article) updateAlerts() error {
 	config := core.NewConfig()
 	config.GBaseStyles = []string{"proselint", "write-good", "Joblint", "Spelling"}
 	config.MinAlertLevel = 1
 	config.InExt = ".html"
 	linter := lint.Linter{Config: config, CheckManager: check.NewManager(config)}
 	files, _ := linter.LintString(article.HTML)
-	return files[0].SortedAlerts(), nil
-}
-
-func (article *Article) init() error {
-	raw, err := article.getRaw()
-	if err != nil {
-		return err
-	}
-	article.Raw = raw
-	article.Title = article.getTitle()
+	article.Alerts = files[0].SortedAlerts()
 	return nil
 }
