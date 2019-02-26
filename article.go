@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/errata-ai/vale/check"
 	"github.com/errata-ai/vale/core"
@@ -19,14 +20,16 @@ type Author struct {
 
 // Article is a struct with article title and content
 type Article struct {
-	Category Category
-	File     string
-	Title    string
-	Raw      string
-	HTML     string
-	Slug     string
-	Authors  []Author
-	Alerts   []core.Alert
+	Category  Category
+	File      string
+	Title     string
+	Raw       string
+	HTML      string
+	Slug      string
+	Authors   []Author
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Alerts    []core.Alert
 }
 
 func (article *Article) updateRaw() error {
@@ -80,6 +83,19 @@ func (article *Article) updateMetaInfo() error {
 		authors = append(authors, author)
 	}
 	article.Authors = authors
+
+	times := gjson.Get(string(content), "#.commit.author.date").Array()
+	t, err := time.Parse(time.RFC3339, times[0].String())
+	if err != nil {
+		return err
+	}
+	article.UpdatedAt = t
+
+	t, err = time.Parse(time.RFC3339, times[len(times)-1].String())
+	if err != nil {
+		return err
+	}
+	article.CreatedAt = t
 	return nil
 }
 

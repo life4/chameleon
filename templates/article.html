@@ -49,6 +49,19 @@
 
 {{block "underground" .}}
   {{ if .Authors }}
+    <div class="bg-white text-muted floor">
+      <span class="alert alert-light" style="margin-right: 20px">
+        <i class="fas fa-plus"></i>
+        created:
+        {{ .CreatedAt.Format "2006-01-02 15:04 (Mon)" }}
+      </span>
+      <span class="alert alert-light">
+        <i class="far fa-edit"></i>
+        updated:
+        {{ .UpdatedAt.Format "2006-01-02 15:04 (Mon)" }}
+      </span>
+    </div>
+
     <div class="container-fluid bg-white text-body footer">
       <h2>Contributors</h2>
       {{ range .Authors }}
