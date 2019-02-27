@@ -2,29 +2,23 @@
 
 Chameleon is web application that reflects content from markdown files from Github.
 
-## Usage
+## Run from release
 
-First of all, copy and edit config:
+1. [Download release](https://github.com/orsinium/chameleon/releases).
+2. Extract: `tar -xzf chameleon.tar.gz`
+3. Edit config: `nano config.toml`
+4. Run binary release for your platform: `./linux-amd64.bin`
 
-```bash
-cp config{_example,}.toml
-nano config.toml
-```
-
-Run from source:
+## Run from source
 
 ```bash
+git clone https://github.com/orsinium/chameleon
 go run *.go
 ```
 
-Build:
+## Run from build
 
 ```bash
 go build .
-```
-
-Run from build:
-
-```bash
 ./chameleon
 ```
