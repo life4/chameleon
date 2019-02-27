@@ -2,3 +2,5 @@
 chameleon
 config.toml
 .cache
+.mypy_cache/
+chameleon.tar.gz
