@@ -10,12 +10,11 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/BurntSushi/toml"
+	"github.com/go-chi/chi"
 	"github.com/spf13/pflag"
 	cache "github.com/victorspringer/http-cache"
 	"github.com/victorspringer/http-cache/adapter/memory"
-
-	"github.com/BurntSushi/toml"
-	"github.com/gorilla/mux"
 	blackfriday "gopkg.in/russross/blackfriday.v2"
 )
 
@@ -70,7 +69,7 @@ func (config *Config) handleCategories(w http.ResponseWriter, r *http.Request) {
 }
 
 func (config *Config) handleCategory(w http.ResponseWriter, r *http.Request) {
-	categorySlug := mux.Vars(r)["category"]
+	categorySlug := chi.URLParam(r, "category")
 	category, ok := config.Categories[categorySlug]
 	if !ok {
 		w.WriteHeader(http.StatusNotFound)
@@ -107,8 +106,9 @@ func (config *Config) handleCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 func (config *Config) handleArticleRedirect(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	categorySlug := vars["category"]
+	categorySlug := chi.URLParam(r, "category")
+	articleSlug := strings.Trim(chi.URLParam(r, "*"), "/"+categorySlug+"/")
+
 	category, ok := config.Categories[categorySlug]
 	if !ok {
 		w.WriteHeader(http.StatusNotFound)
@@ -116,14 +116,14 @@ func (config *Config) handleArticleRedirect(w http.ResponseWriter, r *http.Reque
 	}
 
 	// if there is no extension then it is probably article without trailing slash (/lol -> /lol/)
-	if !strings.ContainsRune(vars["article"], '.') {
-		http.Redirect(w, r, vars["article"]+"/", http.StatusTemporaryRedirect)
+	if !strings.ContainsRune(articleSlug, '.') {
+		http.Redirect(w, r, articleSlug+"/", http.StatusTemporaryRedirect)
 		return
 	}
 
 	// if it has extension of article then it is definetly article (/lol.md -> /lol/)
-	if strings.HasSuffix(vars["article"], category.Ext) {
-		http.Redirect(w, r, strings.TrimSuffix(vars["article"], category.Ext)+"/", http.StatusTemporaryRedirect)
+	if strings.HasSuffix(articleSlug, category.Ext) {
+		http.Redirect(w, r, strings.TrimSuffix(articleSlug, category.Ext)+"/", http.StatusTemporaryRedirect)
 	}
 
 	// if it has different extension then it is file (/lol.jpg -> githubusercontent.com/.../lol.jpg)
@@ -133,32 +133,33 @@ func (config *Config) handleArticleRedirect(w http.ResponseWriter, r *http.Reque
 		log.Fatal(err)
 		return
 	}
-	link += "/" + vars["article"]
+	link += "/" + articleSlug
 	http.Redirect(w, r, link, http.StatusTemporaryRedirect)
 
 }
 
 func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	categorySlug := vars["category"]
+	categorySlug := chi.URLParam(r, "category")
+	articleSlug := chi.URLParam(r, "article")
+
 	category, ok := config.Categories[categorySlug]
 	if !ok {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	if strings.HasSuffix(vars["article"], category.Ext) {
-		newURL := fmt.Sprintf("/%s/%s/", categorySlug, strings.TrimSuffix(vars["article"], category.Ext))
+	if strings.HasSuffix(articleSlug, category.Ext) {
+		newURL := fmt.Sprintf("/%s/%s/", categorySlug, strings.TrimSuffix(articleSlug, category.Ext))
 		http.Redirect(w, r, newURL, http.StatusPermanentRedirect)
 		return
 	}
 
 	category.Slug = categorySlug
-	file := vars["article"] + category.Ext
+	file := articleSlug + category.Ext
 	article := Article{
 		Category: category,
 		File:     file,
-		Slug:     vars["article"],
+		Slug:     articleSlug,
 	}
 	err := article.updateRaw()
 	if err != nil {
@@ -246,11 +247,11 @@ func main() {
 	}
 	conf.Templates = *templatesPath
 
-	r := mux.NewRouter()
-	r.HandleFunc("/", conf.handleCategories)
-	r.HandleFunc("/{category}/", conf.handleCategory)
-	r.HandleFunc("/{category}/{article}", conf.handleArticleRedirect)
-	r.HandleFunc("/{category}/{article}/", conf.handleArticle)
+	r := chi.NewRouter()
+	r.Get("/", conf.handleCategories)
+	r.Get("/{category}/", conf.handleCategory)
+	r.Get("/{category}/{article}/", conf.handleArticle)
+	r.Get("/{category}/*", conf.handleArticleRedirect)
 
 	if conf.Cache {
 		memcached, err := memory.NewAdapter(
