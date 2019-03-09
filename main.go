@@ -106,7 +106,7 @@ func (config *Config) handleCategory(w http.ResponseWriter, r *http.Request) {
 
 func (config *Config) handleArticleRedirect(w http.ResponseWriter, r *http.Request) {
 	categorySlug := chi.URLParam(r, "category")
-	articleSlug := strings.Trim(chi.URLParam(r, "*"), "/"+categorySlug+"/")
+	articleSlug := strings.TrimPrefix(chi.URLParam(r, "*"), "/"+categorySlug+"/")
 
 	category, ok := config.Categories[categorySlug]
 	if !ok {
