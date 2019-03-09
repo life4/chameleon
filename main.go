@@ -123,6 +123,7 @@ func (config *Config) handleArticleRedirect(w http.ResponseWriter, r *http.Reque
 	// if it has extension of article then it is definetly article (/lol.md -> /lol/)
 	if strings.HasSuffix(articleSlug, category.Ext) {
 		http.Redirect(w, r, strings.TrimSuffix(articleSlug, category.Ext)+"/", http.StatusTemporaryRedirect)
+		return
 	}
 
 	// if it has different extension then it is file (/lol.jpg -> githubusercontent.com/.../lol.jpg)
@@ -133,7 +134,7 @@ func (config *Config) handleArticleRedirect(w http.ResponseWriter, r *http.Reque
 		return
 	}
 	link += "/" + articleSlug
-	http.Redirect(w, r, link, http.StatusTemporaryRedirect)
+	http.Redirect(w, r, link, http.StatusPermanentRedirect)
 
 }
 
