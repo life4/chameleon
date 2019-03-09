@@ -49,25 +49,25 @@
 
 {{block "underground" .}}
   {{ if .Authors }}
-    <div class="bg-white text-muted floor">
-      <span class="alert alert-light" style="margin-right: 20px">
-        <i class="fas fa-plus"></i>
-        created:
-        {{ .CreatedAt.Format "2006-01-02 (Mon)" }}
-      </span>
-      <span class="alert alert-light">
-        <i class="far fa-edit"></i>
-        updated:
-        {{ .UpdatedAt.Format "2006-01-02 (Mon)" }}
-      </span>
-      <span class="alert alert-light">
-        <i class="far fa-eye"></i>
-        views:
-        {{ .Views }}
-      </span>
-    </div>
+    <div class="bg-white text-body floor">
+      <div class="text-muted" style="padding-bottom: 20px">
+        <span class="statblock">
+          <i class="fas fa-plus"></i>
+          created:
+          {{ .CreatedAt.Format "2006-01-02 (Mon)" }}
+        </span>
+        <span class="statblock">
+          <i class="far fa-edit"></i>
+          updated:
+          {{ .UpdatedAt.Format "2006-01-02 (Mon)" }}
+        </span>
+        <span class="statblock">
+          <i class="far fa-eye"></i>
+          views:
+          {{ .Views }}
+        </span>
+      </div>
 
-    <div class="container-fluid bg-white text-body footer">
       <h2>Contributors</h2>
       {{ range .Authors }}
         <a href="https://github.com/{{ .Login }}" target="_blank" class="avatar">
