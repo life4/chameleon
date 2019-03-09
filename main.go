@@ -15,7 +15,6 @@ import (
 	"github.com/spf13/pflag"
 	cache "github.com/victorspringer/http-cache"
 	"github.com/victorspringer/http-cache/adapter/memory"
-	blackfriday "gopkg.in/russross/blackfriday.v2"
 )
 
 const (
@@ -168,7 +167,7 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	article.Title = article.getTitle()
-	article.HTML = string(blackfriday.Run([]byte(article.Raw)))
+	article.HTML = article.getHTML()
 
 	if config.Contributors {
 		err := article.updateMetaInfo()

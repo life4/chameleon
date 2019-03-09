@@ -14,6 +14,7 @@ import (
 	"github.com/recoilme/pudge"
 	"github.com/recoilme/slowpoke"
 	"github.com/tidwall/gjson"
+	blackfriday "gopkg.in/russross/blackfriday.v2"
 )
 
 // Author is a struct with contributor info
@@ -111,6 +112,13 @@ func (article *Article) getTitle() string {
 	}
 	article.Raw = strings.TrimPrefix(article.Raw, title)
 	return title[2:]
+}
+
+func (article *Article) getHTML() (html string) {
+	html = string(blackfriday.Run([]byte(article.Raw)))
+	html = strings.Replace(html, "src=\"./", "src=\"../", -1)
+	html = strings.Replace(html, "href=\"./", "href=\"../", -1)
+	return
 }
 
 func (article *Article) updateAlerts() error {
