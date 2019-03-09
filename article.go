@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 
@@ -114,10 +115,16 @@ func (article *Article) getTitle() string {
 	return title[2:]
 }
 
+var rexImg = regexp.MustCompile("(<img src=\"(.*?)\".*?/>)")
+
 func (article *Article) getHTML() (html string) {
+	// convert markdown to html
 	html = string(blackfriday.Run([]byte(article.Raw)))
+	// fix relative paths
 	html = strings.Replace(html, "src=\"./", "src=\"../", -1)
 	html = strings.Replace(html, "href=\"./", "href=\"../", -1)
+	// wrap images into link
+	html = rexImg.ReplaceAllString(html, "<a href=\"$2\" target=\"_blank\">$1</a>")
 	return
 }
 
