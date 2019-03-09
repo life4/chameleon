@@ -63,6 +63,10 @@
       .level-suggestion {
         color: green;
       }
+
+      .content img {
+        max-width: 100%;
+      }
     </style>
   </head>
 
@@ -76,7 +80,7 @@
     </div>
 
     <div class="container-fluid bg-white text-body">
-      <div class="container">
+      <div class="container content">
         {{block "content" .}}
           No content
         {{end}}
