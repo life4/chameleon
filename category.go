@@ -57,7 +57,7 @@ func (category *Category) getArticles() (articles []Article, err error) {
 		if strings.HasSuffix(name.String(), category.Ext) {
 			wg.Add(1)
 			article = Article{
-				Category: *category,
+				Category: category,
 				File:     name.String(),
 				Slug:     strings.TrimSuffix(name.String(), category.Ext),
 			}

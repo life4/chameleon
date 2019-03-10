@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"path"
 	"regexp"
 	"strings"
 	"time"
@@ -25,12 +26,15 @@ type Author struct {
 
 // Article is a struct with article title and content
 type Article struct {
-	Category  Category
-	File      string
-	Title     string
-	Raw       string
-	HTML      string
-	Slug      string
+	Category *Category
+	Config   *Config
+
+	File  string
+	Title string
+	Raw   string
+	HTML  string
+	Slug  string
+
 	Authors   []Author
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -140,7 +144,7 @@ func (article *Article) updateAlerts() error {
 }
 
 func (article *Article) getFilename() string {
-	return fmt.Sprintf(".cache/%s.db", article.Category.Slug)
+	return path.Join(article.Config.Project, ".cache", article.Category.Slug+".db")
 }
 
 func (article *Article) updateViews() error {

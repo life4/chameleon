@@ -25,9 +25,10 @@ const (
 
 // Config is the TOML config with attached handlers
 type Config struct {
-	Listen    string
-	Root      string
-	Templates string
+	Listen    string // hostname and port to listen
+	Root      string // prefix for all URLs
+	Project   string // path to the project dir
+	Templates string // path to the templates dir
 
 	Cache        bool
 	Contributors bool
@@ -157,7 +158,8 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 	category.Slug = categorySlug
 	file := articleSlug + category.Ext
 	article := Article{
-		Category: category,
+		Config:   config,
+		Category: &category,
 		File:     file,
 		Slug:     articleSlug,
 	}
