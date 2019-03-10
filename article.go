@@ -144,7 +144,7 @@ func (article *Article) updateAlerts() error {
 }
 
 func (article *Article) getFilename() string {
-	return path.Join(article.Config.Project, ".cache", article.Category.Slug+".db")
+	return path.Join(article.Config.Project, ".storage", article.Category.Slug+".db")
 }
 
 func (article *Article) updateViews() error {

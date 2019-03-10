@@ -1,6 +1,6 @@
 # ignore binaries
 chameleon
 config.toml
-.cache
+.storage
 .mypy_cache/
 chameleon.tar.gz
