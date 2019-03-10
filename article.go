@@ -152,6 +152,9 @@ func (article *Article) updateViews() error {
 		return nil
 	}
 	bs, err := slowpoke.Get(article.getFilename(), []byte(article.Slug))
+	if err == pudge.ErrKeyNotFound {
+		return nil
+	}
 	if err != nil {
 		return err
 	}

@@ -7,7 +7,7 @@ Description=chameleon
 Type=simple
 Restart=always
 RestartSec=5s
-ExecStart=/path/to/bin/chameleon --config /path/to/config.toml  --templates /path/to/templates/
+ExecStart=/path/to/bin/chameleon --config /path/to/config.toml  --project /path/to/project/root/
 
 [Install]
 WantedBy=multi-user.target

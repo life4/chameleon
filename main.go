@@ -247,10 +247,11 @@ func main() {
 	if *listen != "" {
 		conf.Listen = *listen
 	}
-	conf.Templates = path.Join(*projectPath, "templates")
+	conf.Project = *projectPath
+	conf.Templates = path.Join(conf.Project, "templates")
 
 	// serve static files
-	fileServer := http.FileServer(http.Dir(path.Join(*projectPath, "assets")))
+	fileServer := http.FileServer(http.Dir(path.Join(conf.Project, "assets")))
 	http.Handle(conf.Root+"assets/", http.StripPrefix(conf.Root+"assets/", fileServer))
 
 	// serve dynamic pages
