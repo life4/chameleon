@@ -1,0 +1,64 @@
+.anchorjs-link {
+	color: #6c757d;
+}
+
+.anchorjs-link:hover {
+	color: #212529;
+	text-decoration: none;
+}
+
+.container-fluid,
+.floor {
+	padding-top: 40px;
+	padding-bottom: 40px;
+}
+
+.footer,
+.header,
+.floor {
+	text-align: center;
+}
+
+.statblock {
+	display: inline-block;
+	margin: 2px 10px;
+}
+
+.avatar {
+	opacity: .9;
+}
+
+.avatar:hover {
+	text-decoration: none;
+	opacity: 1;
+}
+
+.avatar img {
+	border-radius: 25px;
+	width: 50px;
+	height: 50px;
+	box-shadow: 0 0 1px;
+}
+
+.level-error {
+	color: red;
+}
+
+.level-warning {
+	color: yellow;
+}
+
+.level-suggestion {
+	color: green;
+}
+
+.content img {
+	max-width: 100%;
+}
+
+.mjx-chtml {
+	display: inline-block;
+	max-width: 99%;
+	overflow-x: auto;
+	overflow-y: hidden;
+}

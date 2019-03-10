@@ -233,7 +233,7 @@ func (config *Config) handleArticle(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	configPath := pflag.StringP("config", "c", "config.toml", "path to config file")
-	templatesPath := pflag.StringP("templates", "t", "templates/", "path to templates directory")
+	projectPath := pflag.StringP("project", "p", "./", "path to the project directory")
 	listen := pflag.StringP("listen", "l", "", "server and port to listen (value from config by default)")
 	pflag.Parse()
 
@@ -245,8 +245,13 @@ func main() {
 	if *listen != "" {
 		conf.Listen = *listen
 	}
-	conf.Templates = *templatesPath
+	conf.Templates = path.Join(*projectPath, "templates")
 
+	// serve static files
+	fileServer := http.FileServer(http.Dir(path.Join(*projectPath, "assets")))
+	http.Handle(conf.Root+"assets/", http.StripPrefix(conf.Root+"assets/", fileServer))
+
+	// serve dynamic pages
 	r := chi.NewRouter()
 	r.Get("/", conf.handleCategories)
 	r.Get("/{category}/", conf.handleCategory)
