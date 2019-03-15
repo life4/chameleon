@@ -1,4 +1,4 @@
-# Chamelon
+# Chameleon
 
 Chameleon is web application that reflects content from markdown files from Github.
 
