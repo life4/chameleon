@@ -14,7 +14,6 @@ install:
   - go get .
   # Install linters.
   - (
-      cd linters
       go get golang.org/x/lint/golint
       go get github.com/kisielk/errcheck
       go get honnef.co/go/tools/cmd/staticcheck
