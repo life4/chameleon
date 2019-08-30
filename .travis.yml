@@ -20,6 +20,8 @@ install:
   - go get mvdan.cc/unparam
   - go get github.com/mgechev/revive
   - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b $GOPATH/bin
+  # review doggy
+  - curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh| sh -s
 
 before_script:
   - echo $TRAVIS
@@ -32,4 +34,4 @@ before_script:
   - curl httpbin.org/ip
 
 script:
-  - reviewdog -reporter=github-pr-review
+  - ./bin/reviewdog -reporter=github-pr-review
