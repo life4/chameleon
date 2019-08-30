@@ -13,14 +13,12 @@ secure: "0LSry9WHxx964kAfoNI/1jJO+hHHhHcv8x6Dzsbu75ABsZLAhkRQQ2cRHUK8/VQtzMIxttu
 install:
   - go get .
   # Install linters.
-  - (
-      go get golang.org/x/lint/golint
-      go get github.com/kisielk/errcheck
-      go get honnef.co/go/tools/cmd/staticcheck
-      go get github.com/client9/misspell/cmd/misspell
-      go get mvdan.cc/unparam
-      go get github.com/mgechev/revive
-    )
+  - go get golang.org/x/lint/golint
+  - go get github.com/kisielk/errcheck
+  - go get honnef.co/go/tools/cmd/staticcheck
+  - go get github.com/client9/misspell/cmd/misspell
+  - go get mvdan.cc/unparam
+  - go get github.com/mgechev/revive
   - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b $GOPATH/bin
 
 before_script:
