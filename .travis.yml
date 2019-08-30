@@ -1,0 +1,33 @@
+language: go
+
+go:
+  - "1.12.x"
+
+secure: "0LSry9WHxx964kAfoNI/1jJO+hHHhHcv8x6Dzsbu75ABsZLAhkRQQ2cRHUK8/VQtzMIxttuMkDCpxUZ/XnKtryLUZRGa4eBXml29A23MiIANwE9kEf7t6+rAc6m0sjDyzQmAu0sEl3NYnT3QqlSwe6M3q1wsstxQxVdtuqzbI6u8hcAcAZMkvv7IR2F0mjeNyKqHjPJu7Q+oVLIXlXXIIuIOGxkKyRFXkBm/POn0WhDwqpeIc+mZ+pEuxwmYWuSgLfOoxSUKK0gMxBDoNQgDvstxazf+0MYT1bjoJ9qPuEL+9h6wVwUJ/ql8MtYJSS+CRgLY/5Kj3LVH8+bdIgY79/liNpuErufYEoKhfOkhyNtB9J+BO3BvrTN6KSV9WguXE+JX+pFGDFcxts+yWNuEU2dHc/QG9JCjFDQdCnAvAxy0WzWP+HtUA3zZ1tLtrHNoG1+enbL16J1tQwp8x0gTjCp2yfg2KGSQWFNV8+p8hkiLhtnjLiBd+hYtQnfGt+y591uE+ERplf9KadxpxVKUhjOsRJYmDBFdp4fjDNLNOfMkXKzsTKq8VCTTAxynpg/AWM+Ia+iu7SUy97WiQndEXoVHqF09m8wr0SXAZwsAgBP/IfTk/J6uSjdJGR5xRascmbUO1SRdHY2gx7GAutv613M9nS8J/XhfbOLrmCgNBpc="
+
+install:
+  - go install .
+  # Install linters.
+  - (
+      cd linters
+      go get golang.org/x/lint/golint
+      go get github.com/kisielk/errcheck
+      go get honnef.co/go/tools/cmd/staticcheck
+      go get github.com/client9/misspell/cmd/misspell
+      go get mvdan.cc/unparam
+      go get github.com/mgechev/revive
+    )
+  - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b $GOPATH/bin
+
+before_script:
+  - echo $TRAVIS
+  - echo $TRAVIS_PULL_REQUEST
+  - echo $TRAVIS_PULL_REQUEST_BRANCH
+  - echo $TRAVIS_COMMIT
+  - echo $TRAVIS_PULL_REQUEST_SHA
+  - echo $TRAVIS_REPO_SLUG
+  - echo $TRAVIS_SECURE_ENV_VARS
+  - curl httpbin.org/ip
+
+script:
+  - reviewdog -reporter=github-pr-review

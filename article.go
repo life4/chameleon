@@ -19,7 +19,7 @@ import (
 	blackfriday "gopkg.in/russross/blackfriday.v2"
 )
 
-// Author is a struct with contributor info
+// Authors is a struct with contributor info
 type Author struct {
 	Login, Avatar string
 }
