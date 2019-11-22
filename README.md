@@ -15,6 +15,9 @@ Chameleon is web application that reflects content from markdown files from Gith
 
 ```bash
 git clone https://github.com/orsinium/chameleon
+cd chameleon
+cp config{_example,}.toml
+go get .
 go run *.go
 ```
 

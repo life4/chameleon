@@ -1,5 +1,5 @@
 .anchorjs-link {
-	color: #6c757d;
+	color: #212529;
 }
 
 .anchorjs-link:hover {
@@ -61,4 +61,9 @@
 	max-width: 99%;
 	overflow-x: auto;
 	overflow-y: hidden;
+}
+
+blockquote {
+	border-left: solid 6px #bdc3c7;
+	padding-left: 12px;
 }
