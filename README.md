@@ -1,8 +1,6 @@
 # Chameleon
 
-Chameleon is web application that reflects content from markdown files from Github.
-
-[Demo](https://articles.life4web.ru/)
+Chameleon is web application that reflects content from markdown files from Github. Powers [articles.orsinium.dev](https://articles.orsinium.dev/).
 
 ## Run from release
 
