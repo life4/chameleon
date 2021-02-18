@@ -1,5 +1,4 @@
 # ignore binaries
-chameleon
 config.toml
 .storage
 .mypy_cache/
