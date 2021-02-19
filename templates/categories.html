@@ -12,9 +12,9 @@
   <div class="row">
     {{range .}}
       <div class="col-sm">
-        <a href="/{{ .Slug }}/" class="card btn btn-secondary bg-secondary text-white">
+        <a href="/{{ .DirName }}/" class="card btn btn-secondary bg-secondary text-white">
           <div class="card-body">
-            {{ .Name }}
+            {{ .Title }}
           </div>
         </a>
       </div>
