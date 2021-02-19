@@ -1,22 +1,18 @@
 {{define "title"}}
-  {{ .Category.Name }}
+  {{ .Article.Title }}
 {{end}}
 
 {{define "header"}}
-  <a href="/" class="btn btn-dark">
-    <i class="fas fa-chevron-left"></i>
-    Categories
-  <a>
   <h1>
-    {{ .Category.Name }}
+    {{ .Article.Title }}
   </h1>
 {{end}}
 
 {{define "content"}}
   <ul>
-    {{range .Articles}}
+    {{range .Categories}}
       <li>
-        <a href="{{ .Slug }}/">{{ .Title }}</a>
+        <a href="{{ .DirName }}/">{{ .Title }}</a>
       </li>
     {{end}}
   </ul>

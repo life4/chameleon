@@ -61,18 +61,22 @@ func (a *Article) HTML() (string, error) {
 func (a *Article) trimTitle() {
 	title := bytes.SplitN(a.raw, []byte{'\n'}, 2)[0]
 	if bytes.Index(title, []byte{'#', ' '}) != 0 {
+		if a.FileName == ReadMe {
+			a.title = a.Path().Parent().Name()
+			return
+		}
 		a.title = a.FileName
 		return
 	}
 	a.raw = bytes.TrimPrefix(a.raw, title)
-	a.title = string(title[2:])
+	a.title = strings.TrimSuffix(string(title[2:]), "\n")
 }
 
 func (a *Article) Title() (string, error) {
 	if a.title == "" {
 		_, err := a.Raw()
 		if err != nil {
-			return "", err
+			return "", nil
 		}
 	}
 	return a.title, nil

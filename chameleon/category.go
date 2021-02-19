@@ -2,7 +2,6 @@ package chameleon
 
 import (
 	"path"
-	"strings"
 )
 
 const (
@@ -19,23 +18,15 @@ func (c Category) Path() Path {
 	return c.Repository.Path().Join(c.DirName)
 }
 
-func (c Category) Title() (string, error) {
+func (c Category) HasReadme() (bool, error) {
 	p := c.Path().Join(ReadMe)
-	isfile, err := p.IsFile()
-	if err != nil {
-		return "", err
-	}
-	if !isfile {
-		return c.DirName, nil
-	}
+	return p.IsFile()
+}
+
+func (c Category) Title() (string, error) {
 	a := Article{
 		Repository: c.Repository,
 		FileName:   path.Join(c.DirName, ReadMe),
 	}
-	t, err := a.Title()
-	if err != nil {
-		return "", err
-	}
-	t = strings.TrimSuffix(t, "/"+ReadMe)
-	return t, nil
+	return a.Title()
 }

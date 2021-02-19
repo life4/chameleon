@@ -17,6 +17,10 @@ func (p Path) Name() string {
 	return path.Base(p.String())
 }
 
+func (p Path) Parent() Path {
+	return Path(path.Dir(p.String()))
+}
+
 func (p Path) Join(fname string) Path {
 	return Path(path.Join(p.String(), fname))
 }
