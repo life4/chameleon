@@ -28,7 +28,7 @@
     <meta name="theme-color" content="#ffffff">
   </head>
 
-  <body class="bg-dark text-white">
+  <body class="bg-white text-body">
 
     <div class="container-fluid bg-dark text-white header">
       <div class="container">
@@ -37,11 +37,19 @@
       </div>
     </div>
 
-    <div class="container-fluid bg-white text-body">
-      <div class="container content">
-        {{block "content" .}}
-          No content
-        {{end}}
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-2 col-lg-1 toc">
+          {{block "toc" .}}
+            No TOC
+          {{end}}
+        </div>
+        <div class="col content">
+          {{block "content" .}}
+            No content
+          {{end}}
+        </div>
       </div>
     </div>
 
