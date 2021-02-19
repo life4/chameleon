@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 )
 
 type Path string
@@ -17,11 +18,18 @@ func (p Path) Name() string {
 	return path.Base(p.String())
 }
 
+func (p Path) Relative(to Path) Path {
+	return Path(strings.TrimPrefix(p.String(), to.String()))
+}
+
 func (p Path) Parent() Path {
 	return Path(path.Dir(p.String()))
 }
 
 func (p Path) Join(fname string) Path {
+	if fname == "" {
+		return p
+	}
 	return Path(path.Join(p.String(), fname))
 }
 

@@ -40,11 +40,14 @@
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-2 col-lg-1 toc">
+        <div class="col toc">
           {{block "toc" .}}
             No TOC
           {{end}}
         </div>
+      </div>
+
+      <div class="row">
         <div class="col content">
           {{block "content" .}}
             No content

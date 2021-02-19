@@ -25,6 +25,10 @@ func (a Article) Path() Path {
 	return a.Repository.Path().Join(a.FileName)
 }
 
+func (a Article) IsMarkdown() bool {
+	return strings.HasSuffix(a.Path().String(), Extension)
+}
+
 func (a *Article) Raw() ([]byte, error) {
 	if a.raw != nil {
 		return a.raw, nil
@@ -76,7 +80,7 @@ func (a *Article) Title() (string, error) {
 	if a.title == "" {
 		_, err := a.Raw()
 		if err != nil {
-			return "", nil
+			return "", err
 		}
 	}
 	return a.title, nil

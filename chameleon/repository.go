@@ -56,10 +56,3 @@ func (r Repository) Pull() error {
 	}
 	return nil
 }
-
-func (r Repository) ReadMe() Article {
-	return Article{
-		Repository: r,
-		FileName:   ReadMe,
-	}
-}
