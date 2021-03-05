@@ -8,7 +8,7 @@ import (
 
 type Page struct {
 	Article   Article
-	Traceback []Category
+	Parent    *Category
 	Category  *Category
 	Templates fs.FS
 }

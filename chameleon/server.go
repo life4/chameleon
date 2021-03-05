@@ -43,18 +43,6 @@ func (s *Server) handle(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s Server) Page(urlPath string) (*Page, error) {
-	// root page
-	if urlPath == "" || urlPath == "/" {
-		page := Page{
-			Article: Article{
-				Repository: s.Repository,
-				Path:       s.Repository.Path.Join(ReadMe),
-			},
-			Templates: s.Templates,
-		}
-		return &page, nil
-	}
-
 	p := s.Repository.Path.Join(urlPath)
 
 	// category page
@@ -91,10 +79,10 @@ func (s Server) Page(urlPath string) (*Page, error) {
 	}
 	if isfile {
 		page := Page{
-			Traceback: []Category{{
+			Parent: &Category{
 				Repository: s.Repository,
 				Path:       p.Parent(),
-			}},
+			},
 			Article: Article{
 				Repository: s.Repository,
 				Path:       p,

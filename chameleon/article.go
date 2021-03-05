@@ -21,8 +21,11 @@ type Article struct {
 	title string
 }
 
-func (a Article) IsMarkdown() bool {
-	return strings.HasSuffix(a.Path.String(), Extension)
+func (a Article) Valid() (bool, error) {
+	if !strings.HasSuffix(a.Path.String(), Extension) {
+		return false, nil
+	}
+	return a.Path.IsFile()
 }
 
 func (a Article) IsReadme() bool {

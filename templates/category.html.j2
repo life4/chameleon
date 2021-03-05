@@ -4,12 +4,28 @@
 
 {{define "header"}}
   <h1>
+    {{if .Parent}}
+      <a href="../">{{ .Parent.Article.Title }}</a> /
+    {{end}}
     {{ .Article.Title }}
   </h1>
 {{end}}
 
 {{define "toc"}}
-
+  {{if .Category}}
+    <ul>
+      {{range .Category.Categories}}
+        <li>
+          <a href="./{{ .Path.Name }}/">{{ .Article.Title }}</a>
+        </li>
+      {{end}}
+      {{range .Category.Articles}}
+        <li>
+          <a href="./{{ .Path.Name }}/">{{ .Title }}</a>
+        </li>
+      {{end}}
+    </ul>
+  {{end}}
 {{end}}
 
 {{define "content"}}
