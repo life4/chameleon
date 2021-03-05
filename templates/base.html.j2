@@ -10,8 +10,7 @@
     <title>{{block "title" .}}Gram's articles{{end}} - Chameleon</title>
     <link rel="shortcut icon" href="favicon.ico">
 
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous" />
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous" />
 
     <link href="/assets/style.css" rel="stylesheet" />
@@ -30,41 +29,29 @@
 
   <body class="bg-white text-body">
 
-    <div class="container-fluid bg-dark text-white header">
-      <div class="container">
-        {{block "header" .}}
-        {{end}}
-      </div>
+    <div class="container header">
+      {{block "header" .}}
+      {{end}}
     </div>
 
 
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col toc">
-          {{block "toc" .}}
-            No TOC
-          {{end}}
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col content">
-          {{block "content" .}}
-            No content
-          {{end}}
-        </div>
-      </div>
+    <div class="container toc">
+      {{block "toc" .}}
+      {{end}}
     </div>
 
-    <div class="container-fluid bg-dark text-white footer">
-      <div class="container">
-        {{block "footer" .}}
-        {{end}}
-      </div>
+    <div class="container-lg content">
+      {{block "content" .}}
+        No content
+      {{end}}
     </div>
 
-    {{block "underground" .}}
-    {{end}}
+    <div class="container footer">
+      {{block "footer" .}}
+      {{end}}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 
     <!-- https://www.mathjax.org/ -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>

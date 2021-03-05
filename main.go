@@ -10,9 +10,6 @@ import (
 	"go.uber.org/zap"
 )
 
-//go:embed config.toml
-var config string
-
 //go:embed templates/*.html.j2
 var templates embed.FS
 
