@@ -14,11 +14,11 @@ type Page struct {
 	Views     *Views
 }
 
-func (p Page) Render() (string, error) {
+func (p Page) Render(tname TemplateName) (string, error) {
 	t, err := template.ParseFS(
 		p.Templates,
 		"templates/base.html.j2",
-		"templates/category.html.j2",
+		string(tname),
 	)
 	if err != nil {
 		return "", err

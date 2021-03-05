@@ -1,0 +1,31 @@
+{{define "title"}}
+  {{ .Article.Title }}
+{{end}}
+
+{{define "header"}}
+  <h1>
+    {{if .Parent}}
+      <a href="../">{{ .Parent.Article.Title }}</a> /
+    {{end}}
+    {{ .Article.Title }}
+  </h1>
+{{end}}
+
+{{define "content"}}
+  <table class="table table-sm" style="text-align: left">
+    <tr>
+      <th>line</th>
+      <th>level</th>
+      <th>message</th>
+      <th>check</th>
+    </tr>
+    {{ range .Article.Linter.Alerts }}
+      <tr>
+        <td>{{ .Line }}:{{ .Span }}</td>
+        <td class="level-{{ .Severity }}">{{ .Severity }}</td>
+        <td>{{ .Message }}</td>
+        <td>{{ .Check }}</td>
+      </tr>
+    {{end}}
+  </table>
+{{end}}

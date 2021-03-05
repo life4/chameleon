@@ -33,6 +33,10 @@ func (a Article) IsReadme() bool {
 	return a.Path.Name() == ReadMe
 }
 
+func (a *Article) Linter() Linter {
+	return Linter{Article: a}
+}
+
 func (a *Article) Raw() ([]byte, error) {
 	if a.raw != nil {
 		return a.raw, nil
