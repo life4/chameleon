@@ -48,7 +48,7 @@ func (s Server) Page(urlPath string) (*Page, error) {
 		page := Page{
 			Article: Article{
 				Repository: s.Repository,
-				FileName:   string(s.Repository.Path.Join(ReadMe)),
+				Path:       s.Repository.Path.Join(ReadMe),
 			},
 			Templates: s.Templates,
 		}
@@ -73,11 +73,11 @@ func (s Server) Page(urlPath string) (*Page, error) {
 		page := Page{
 			Category: &Category{
 				Repository: s.Repository,
-				DirName:    string(p.Relative(s.Repository.Path)),
+				Path:       p,
 			},
 			Article: Article{
 				Repository: s.Repository,
-				FileName:   string(p.Join(ReadMe).Relative(s.Repository.Path)),
+				Path:       p.Join(ReadMe),
 			},
 			Templates: s.Templates,
 		}
@@ -93,11 +93,11 @@ func (s Server) Page(urlPath string) (*Page, error) {
 		page := Page{
 			Traceback: []Category{{
 				Repository: s.Repository,
-				DirName:    string(p.Parent()),
+				Path:       p.Parent(),
 			}},
 			Article: Article{
 				Repository: s.Repository,
-				FileName:   string(p.Relative(s.Repository.Path)),
+				Path:       p,
 			},
 			Templates: s.Templates,
 		}

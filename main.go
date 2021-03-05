@@ -13,7 +13,7 @@ import (
 //go:embed config.toml
 var config string
 
-//go:embed templates/*.html
+//go:embed templates/*.html.j2
 var templates embed.FS
 
 func run(logger *zap.Logger) error {

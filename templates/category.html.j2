@@ -1,0 +1,17 @@
+{{define "title"}}
+  {{ .Article.Title }}
+{{end}}
+
+{{define "header"}}
+  <h1>
+    {{ .Article.Title }}
+  </h1>
+{{end}}
+
+{{define "toc"}}
+
+{{end}}
+
+{{define "content"}}
+  {{ .Article.HTML }}
+{{end}}

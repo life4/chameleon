@@ -14,26 +14,26 @@ var rexImg = regexp.MustCompile("(<img src=\"(.*?)\".*?/>)")
 
 type Article struct {
 	Repository Repository
-	FileName   string
+	Path       Path
 
 	// cache
 	raw   []byte
 	title string
 }
 
-func (a Article) Path() Path {
-	return a.Repository.Path.Join(a.FileName)
+func (a Article) IsMarkdown() bool {
+	return strings.HasSuffix(a.Path.String(), Extension)
 }
 
-func (a Article) IsMarkdown() bool {
-	return strings.HasSuffix(a.Path().String(), Extension)
+func (a Article) IsReadme() bool {
+	return a.Path.Name() == ReadMe
 }
 
 func (a *Article) Raw() ([]byte, error) {
 	if a.raw != nil {
 		return a.raw, nil
 	}
-	raw, err := os.ReadFile(a.Path().String())
+	raw, err := os.ReadFile(a.Path.String())
 	if err != nil {
 		return nil, fmt.Errorf("cannot read file: %v", err)
 	}
@@ -65,11 +65,11 @@ func (a *Article) HTML() (string, error) {
 func (a *Article) trimTitle() {
 	title := bytes.SplitN(a.raw, []byte{'\n'}, 2)[0]
 	if bytes.Index(title, []byte{'#', ' '}) != 0 {
-		if a.FileName == ReadMe {
-			a.title = a.Path().Parent().Name()
+		if a.IsReadme() {
+			a.title = a.Path.Parent().Name()
 			return
 		}
-		a.title = a.FileName
+		a.title = a.Path.Name()
 		return
 	}
 	a.raw = bytes.TrimPrefix(a.raw, title)

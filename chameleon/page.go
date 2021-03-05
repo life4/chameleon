@@ -16,14 +16,14 @@ type Page struct {
 func (p Page) Render() (string, error) {
 	t, err := template.ParseFS(
 		p.Templates,
-		"templates/base.html",
-		"templates/category.html",
+		"templates/base.html.j2",
+		"templates/category.html.j2",
 	)
 	if err != nil {
 		return "", err
 	}
 	var buf bytes.Buffer
-	err = t.Execute(&buf, p)
+	err = t.Execute(&buf, &p)
 	if err != nil {
 		return "", err
 	}
