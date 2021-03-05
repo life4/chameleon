@@ -15,7 +15,7 @@ type Category struct {
 }
 
 func (c Category) Path() Path {
-	return c.Repository.Path().Join(c.DirName)
+	return c.Repository.Path.Join(c.DirName)
 }
 
 func (c Category) HasReadme() (bool, error) {

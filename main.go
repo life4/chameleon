@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/BurntSushi/toml"
-	"github.com/go-chi/chi"
 	"github.com/orsinium/chameleon/chameleon"
+	"github.com/spf13/pflag"
 	"go.uber.org/zap"
 )
 
@@ -18,20 +17,18 @@ var config string
 var templates embed.FS
 
 func run(logger *zap.Logger) error {
-	c := chameleon.Config{}
-	_, err := toml.Decode(config, &c)
-	if err != nil {
-		return fmt.Errorf("cannot parse config: %v", err)
-	}
+	var repoPath string
+	pflag.StringVar(&repoPath, "--path", ".repo", "path to the repository")
+	pflag.Parse()
 
+	repo := chameleon.Repository{Path: chameleon.Path(repoPath)}
 	s := chameleon.Server{
-		Config:    c,
-		Templates: templates,
-		Router:    chi.NewRouter(),
+		Repository: repo,
+		Templates:  templates,
 	}
 
 	logger.Info("initializing repos")
-	err = s.InitRepos()
+	err := s.Init()
 	if err != nil {
 		return fmt.Errorf("cannot init repos: %v", err)
 	}

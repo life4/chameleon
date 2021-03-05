@@ -22,7 +22,7 @@ type Article struct {
 }
 
 func (a Article) Path() Path {
-	return a.Repository.Path().Join(a.FileName)
+	return a.Repository.Path.Join(a.FileName)
 }
 
 func (a Article) IsMarkdown() bool {
