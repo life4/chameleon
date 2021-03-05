@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/BurntSushi/toml v0.3.1
+	github.com/enescakir/emoji v1.0.0 // indirect
 	github.com/errata-ai/vale v1.7.1
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/recoilme/pudge v1.0.3

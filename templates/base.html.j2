@@ -34,19 +34,18 @@
       {{end}}
     </div>
 
-
-    <div class="container toc">
-      {{block "toc" .}}
-      {{end}}
-    </div>
-
     <div class="container-lg content">
       {{block "content" .}}
         No content
       {{end}}
     </div>
 
-    <div class="container footer">
+    <div class="container toc">
+      {{block "toc" .}}
+      {{end}}
+    </div>
+
+    <div class="container footer fixed-bottom">
       {{block "footer" .}}
       {{end}}
     </div>

@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/enescakir/emoji"
 	"gopkg.in/russross/blackfriday.v2"
 )
 
@@ -56,6 +57,7 @@ func (a *Article) HTML() (string, error) {
 		return "", err
 	}
 	html := string(blackfriday.Run(raw))
+	html = emoji.Parse(html)
 	// fix relative paths
 	html = strings.Replace(html, "src=\"./", "src=\"../", -1)
 	html = strings.Replace(html, "href=\"./", "href=\"../", -1)
