@@ -31,3 +31,11 @@
 {{define "content"}}
   {{ .Article.HTML }}
 {{end}}
+
+{{define "footer"}}
+  <span class="statblock">
+    <i class="far fa-eye"></i>
+    views:
+    {{ .Views.Get }}
+  </span>
+{{end}}

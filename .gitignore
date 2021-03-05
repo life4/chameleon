@@ -4,3 +4,4 @@ config.toml
 .mypy_cache/
 chameleon.tar.gz
 /.repo/
+/.database.bin

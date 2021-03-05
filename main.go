@@ -29,6 +29,7 @@ func run(logger *zap.Logger) error {
 	if err != nil {
 		return fmt.Errorf("cannot init repos: %v", err)
 	}
+	defer s.Close()
 
 	logger.Info("listening")
 	return s.Serve()

@@ -9,6 +9,7 @@ import (
 type Server struct {
 	Repository Repository
 	Templates  fs.FS
+	database   *Database
 }
 
 func (s *Server) Init() error {
@@ -16,7 +17,16 @@ func (s *Server) Init() error {
 	if err != nil {
 		return fmt.Errorf("cannot pull repo: %v", err)
 	}
+	s.database = &Database{}
+	err = s.database.Open()
+	if err != nil {
+		return fmt.Errorf("cannot open database: %v", err)
+	}
 	return nil
+}
+
+func (s *Server) Close() error {
+	return s.database.Close()
 }
 
 func (s *Server) Serve() error {
@@ -36,6 +46,11 @@ func (s *Server) handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	_, err = w.Write([]byte(content))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = page.Views.Inc()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -68,6 +83,7 @@ func (s Server) Page(urlPath string) (*Page, error) {
 				Path:       p.Join(ReadMe),
 			},
 			Templates: s.Templates,
+			Views:     s.database.Views(p),
 		}
 		return &page, nil
 	}
@@ -88,6 +104,7 @@ func (s Server) Page(urlPath string) (*Page, error) {
 				Path:       p,
 			},
 			Templates: s.Templates,
+			Views:     s.database.Views(p),
 		}
 		return &page, nil
 	}

@@ -11,6 +11,7 @@ type Page struct {
 	Parent    *Category
 	Category  *Category
 	Templates fs.FS
+	Views     *Views
 }
 
 func (p Page) Render() (string, error) {
