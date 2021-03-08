@@ -1,9 +1,13 @@
 package chameleon
 
 import (
+	"embed"
 	"fmt"
 	"net/http"
 )
+
+//go:embed assets/*
+var assets embed.FS
 
 type Server struct {
 	Repository Repository
@@ -31,9 +35,10 @@ func (s *Server) Serve() error {
 	http.HandleFunc("/", s.redirect)
 	http.Handle("/p/", Handler{Server: s, Template: TemplateArticle})
 	http.Handle("/l/", Handler{Server: s, Template: TemplateLinter})
+	http.Handle("/assets/", http.FileServer(http.FS(assets)))
 	return http.ListenAndServe("127.0.0.1:1337", nil)
 }
 
 func (s *Server) redirect(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/p/", 301)
+	http.Redirect(w, r, "/p/", http.StatusTemporaryRedirect)
 }
