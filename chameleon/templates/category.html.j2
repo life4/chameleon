@@ -47,7 +47,9 @@
 
   <span class="statblock">
     <i class="far fa-edit"></i>
-    edited:
+    edited
     {{ (first .Article.Commits).Time | date }}
+    by
+    {{ (first .Article.Commits).Name }}
   </span>
 {{end}}

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"text/template"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 type Handler struct {
@@ -11,8 +13,8 @@ type Handler struct {
 	Server   *Server
 }
 
-func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	page, err := h.Page(r.URL.Path[3:])
+func (h Handler) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	page, err := h.Page(ps.ByName("filepath"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

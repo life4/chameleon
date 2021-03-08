@@ -100,7 +100,7 @@ func (a *Article) Title() (string, error) {
 
 func (a Article) Commits() ([]Commit, error) {
 	p := a.Path.Relative(a.Repository.Path)
-	cmd := a.Repository.Command("log", "--pretty=%cI|%cn", p.String())
+	cmd := a.Repository.Command("log", "--pretty=%H|%cI|%cn|%ce", p.String())
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return nil, fmt.Errorf("%v: %s", err, out)
@@ -110,13 +110,15 @@ func (a Article) Commits() ([]Commit, error) {
 	for i, line := range lines {
 		line := strings.TrimSpace(line)
 		parts := strings.Split(line, "|")
-		t, err := time.Parse(ISO8601, parts[0])
+		t, err := time.Parse(ISO8601, parts[1])
 		if err != nil {
 			return nil, err
 		}
 		commits[i] = Commit{
+			Hash: parts[0],
 			Time: t,
-			Mail: parts[1],
+			Name: parts[2],
+			Mail: parts[3],
 		}
 	}
 	return commits, nil

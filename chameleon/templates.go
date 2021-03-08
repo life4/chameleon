@@ -1,6 +1,7 @@
 package chameleon
 
 import (
+	"crypto/md5"
 	"embed"
 	"fmt"
 	"reflect"
@@ -14,6 +15,7 @@ var templates embed.FS
 var (
 	TemplateArticle = parseTemplate("templates/category.html.j2")
 	TemplateLinter  = parseTemplate("templates/linter.html.j2")
+	TemplateCommits = parseTemplate("templates/commits.html.j2")
 )
 
 func parseTemplate(tname string) *template.Template {
@@ -43,6 +45,10 @@ var funcs = template.FuncMap{
 	},
 	"date": func(item time.Time) string {
 		return item.Format("2006-01-02")
+	},
+	"gravatar": func(mail string) string {
+		hash := md5.Sum([]byte(mail))
+		return fmt.Sprintf("https://www.gravatar.com/avatar/%x", hash)
 	},
 }
 

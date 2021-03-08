@@ -1,0 +1,35 @@
+{{define "title"}}
+  {{ .Article.Title }}
+{{end}}
+
+{{define "header"}}
+  <h1>
+    {{if .Parent}}
+      <a href="../">{{ .Parent.Article.Title }}</a> /
+    {{end}}
+    {{ .Article.Title }}
+  </h1>
+{{end}}
+
+{{define "content"}}
+  <table class="table table-sm align-middle" style="text-align: left">
+    <tr>
+      <th>hash</th>
+      <th>date</th>
+      <th>author</th>
+      <th></th>
+    </tr>
+    {{ range .Article.Commits }}
+      <tr>
+        <td>{{ .Hash }}</td>
+        <td>{{ .Time | date }}</td>
+        <td>{{ .Name }}</td>
+        <td>
+          <a href="mailto:{{.Mail}}" class="avatar">
+            <img src="{{ .Mail | gravatar }}" />
+          </a>
+        </td>
+      </tr>
+    {{end}}
+  </table>
+{{end}}

@@ -7,6 +7,7 @@ require (
 	github.com/enescakir/emoji v1.0.0 // indirect
 	github.com/errata-ai/vale v1.7.1
 	github.com/go-chi/chi v4.0.2+incompatible
+	github.com/julienschmidt/httprouter v1.3.0 // indirect
 	github.com/recoilme/pudge v1.0.3
 	github.com/recoilme/slowpoke v2.0.1+incompatible
 	github.com/spf13/pflag v1.0.5

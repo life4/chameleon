@@ -4,6 +4,8 @@ import (
 	"embed"
 	"fmt"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 //go:embed assets/*
@@ -12,6 +14,7 @@ var assets embed.FS
 type Server struct {
 	Repository Repository
 	Database   *Database
+	router     *httprouter.Router
 }
 
 func (s *Server) Init() error {
@@ -24,6 +27,27 @@ func (s *Server) Init() error {
 	if err != nil {
 		return fmt.Errorf("cannot open database: %v", err)
 	}
+
+	s.router = httprouter.New()
+	s.router.GET("/", s.redirect)
+	s.router.Handler(
+		http.MethodGet,
+		"/assets/*filepath",
+		http.FileServer(http.FS(assets)),
+	)
+	s.router.GET(
+		"/p/*filepath",
+		Handler{Server: s, Template: TemplateArticle}.Handle,
+	)
+	s.router.GET(
+		"/linter/*filepath",
+		Handler{Server: s, Template: TemplateLinter}.Handle,
+	)
+	s.router.GET(
+		"/commits/*filepath",
+		Handler{Server: s, Template: TemplateCommits}.Handle,
+	)
+
 	return nil
 }
 
@@ -32,13 +56,9 @@ func (s *Server) Close() error {
 }
 
 func (s *Server) Serve() error {
-	http.HandleFunc("/", s.redirect)
-	http.Handle("/p/", Handler{Server: s, Template: TemplateArticle})
-	http.Handle("/l/", Handler{Server: s, Template: TemplateLinter})
-	http.Handle("/assets/", http.FileServer(http.FS(assets)))
-	return http.ListenAndServe("127.0.0.1:1337", nil)
+	return http.ListenAndServe("127.0.0.1:1337", s.router)
 }
 
-func (s *Server) redirect(w http.ResponseWriter, r *http.Request) {
+func (s *Server) redirect(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	http.Redirect(w, r, "/p/", http.StatusTemporaryRedirect)
 }
