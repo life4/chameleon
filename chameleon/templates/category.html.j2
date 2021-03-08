@@ -41,8 +41,10 @@
 
   <span class="statblock">
     <i class="far fa-save"></i>
-    created:
+    created
     {{ (last .Article.Commits).Time | date }}
+    by
+    {{ (last .Article.Commits).Name }}
   </span>
 
   <span class="statblock">

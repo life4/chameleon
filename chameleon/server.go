@@ -29,7 +29,11 @@ func (s *Server) Init() error {
 	}
 
 	s.router = httprouter.New()
-	s.router.GET("/", s.redirect)
+	s.router.Handler(
+		http.MethodGet,
+		"/",
+		http.RedirectHandler("/p/", http.StatusTemporaryRedirect),
+	)
 	s.router.Handler(
 		http.MethodGet,
 		"/assets/*filepath",
@@ -57,8 +61,4 @@ func (s *Server) Close() error {
 
 func (s *Server) Serve() error {
 	return http.ListenAndServe("127.0.0.1:1337", s.router)
-}
-
-func (s *Server) redirect(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	http.Redirect(w, r, "/p/", http.StatusTemporaryRedirect)
 }
