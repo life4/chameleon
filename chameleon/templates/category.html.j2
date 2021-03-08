@@ -41,13 +41,13 @@
 
   <span class="statblock">
     <i class="far fa-save"></i>
-    created at:
-    {{ (last .Article.Commits).Time }}
+    created:
+    {{ (last .Article.Commits).Time | date }}
   </span>
 
   <span class="statblock">
     <i class="far fa-edit"></i>
-    last edited:
-    {{ (first .Article.Commits).Time }}
+    edited:
+    {{ (first .Article.Commits).Time | date }}
   </span>
 {{end}}

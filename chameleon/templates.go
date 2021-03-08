@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"text/template"
+	"time"
 )
 
 //go:embed templates/*.html.j2
@@ -39,6 +40,9 @@ var funcs = template.FuncMap{
 		}
 		item = item.Index(item.Len() - 1)
 		return item, nil
+	},
+	"date": func(item time.Time) string {
+		return item.Format("2006-01-02")
 	},
 }
 
