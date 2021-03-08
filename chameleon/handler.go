@@ -76,6 +76,12 @@ func (h Handler) Page(urlPath string) (*Page, error) {
 			},
 			Views: h.Server.Database.Views(p),
 		}
+		if urlPath != "" && urlPath != "/" {
+			page.Parent = &Category{
+				Repository: h.Server.Repository,
+				Path:       p.Parent(),
+			}
+		}
 		return &page, nil
 	}
 
