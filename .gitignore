@@ -5,3 +5,4 @@ config.toml
 chameleon.tar.gz
 /.repo/
 /.database.bin
+/.task/

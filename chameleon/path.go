@@ -19,7 +19,7 @@ func (p Path) Name() string {
 }
 
 func (p Path) Relative(to Path) Path {
-	return Path(strings.TrimPrefix(p.String(), to.String()))
+	return Path(strings.TrimPrefix(p.String(), to.String()+"/"))
 }
 
 func (p Path) Parent() Path {

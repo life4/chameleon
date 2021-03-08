@@ -15,7 +15,7 @@ type Page struct {
 }
 
 func (p Page) Render(tname TemplateName) (string, error) {
-	t, err := template.ParseFS(
+	t, err := template.New("base.html.j2").Funcs(funcs).ParseFS(
 		p.Templates,
 		"templates/base.html.j2",
 		string(tname),

@@ -38,4 +38,16 @@
     views:
     {{ .Views.Get }}
   </span>
+
+  <span class="statblock">
+    <i class="far fa-save"></i>
+    created at:
+    {{ (last .Article.Commits).Time }}
+  </span>
+
+  <span class="statblock">
+    <i class="far fa-edit"></i>
+    last edited:
+    {{ (first .Article.Commits).Time }}
+  </span>
 {{end}}

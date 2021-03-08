@@ -6,10 +6,13 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/enescakir/emoji"
 	"gopkg.in/russross/blackfriday.v2"
 )
+
+const ISO8601 = "2006-01-02T15:04:05-07:00"
 
 var rexImg = regexp.MustCompile("(<img src=\"(.*?)\".*?/>)")
 
@@ -93,4 +96,28 @@ func (a *Article) Title() (string, error) {
 		}
 	}
 	return a.title, nil
+}
+
+func (a Article) Commits() ([]Commit, error) {
+	p := a.Path.Relative(a.Repository.Path)
+	cmd := a.Repository.Command("log", "--pretty=%cI|%cn", p.String())
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, fmt.Errorf("%v: %s", err, out)
+	}
+	lines := strings.Split(strings.TrimSpace(string(out)), "\n")
+	commits := make([]Commit, len(lines))
+	for i, line := range lines {
+		line := strings.TrimSpace(line)
+		parts := strings.Split(line, "|")
+		t, err := time.Parse(ISO8601, parts[0])
+		if err != nil {
+			return nil, err
+		}
+		commits[i] = Commit{
+			Time: t,
+			Mail: parts[1],
+		}
+	}
+	return commits, nil
 }
