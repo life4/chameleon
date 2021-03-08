@@ -2,13 +2,11 @@ package chameleon
 
 import (
 	"fmt"
-	"io/fs"
 	"net/http"
 )
 
 type Server struct {
 	Repository Repository
-	Templates  fs.FS
 	Database   *Database
 }
 

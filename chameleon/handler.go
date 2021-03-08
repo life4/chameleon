@@ -3,17 +3,11 @@ package chameleon
 import (
 	"fmt"
 	"net/http"
-)
-
-type TemplateName string
-
-const (
-	TemplateArticle = TemplateName("templates/category.html.j2")
-	TemplateLinter  = TemplateName("templates/linter.html.j2")
+	"text/template"
 )
 
 type Handler struct {
-	Template TemplateName
+	Template *template.Template
 	Server   *Server
 }
 
@@ -65,8 +59,7 @@ func (h Handler) Page(urlPath string) (*Page, error) {
 				Repository: h.Server.Repository,
 				Path:       p.Join(ReadMe),
 			},
-			Templates: h.Server.Templates,
-			Views:     h.Server.Database.Views(p),
+			Views: h.Server.Database.Views(p),
 		}
 		return &page, nil
 	}
@@ -86,8 +79,7 @@ func (h Handler) Page(urlPath string) (*Page, error) {
 				Repository: h.Server.Repository,
 				Path:       p,
 			},
-			Templates: h.Server.Templates,
-			Views:     h.Server.Database.Views(p),
+			Views: h.Server.Database.Views(p),
 		}
 		return &page, nil
 	}

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"embed"
 	"fmt"
 	"os"
 
@@ -9,9 +8,6 @@ import (
 	"github.com/spf13/pflag"
 	"go.uber.org/zap"
 )
-
-//go:embed templates/*.html.j2
-var templates embed.FS
 
 func run(logger *zap.Logger) error {
 	var repoPath string
@@ -21,7 +17,6 @@ func run(logger *zap.Logger) error {
 	repo := chameleon.Repository{Path: chameleon.Path(repoPath)}
 	s := chameleon.Server{
 		Repository: repo,
-		Templates:  templates,
 	}
 
 	logger.Info("initializing repos")
