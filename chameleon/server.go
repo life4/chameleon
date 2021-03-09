@@ -18,12 +18,8 @@ type Server struct {
 }
 
 func (s *Server) Init() error {
-	err := s.Repository.Pull()
-	if err != nil {
-		return fmt.Errorf("cannot pull repo: %v", err)
-	}
 	s.Database = &Database{}
-	err = s.Database.Open()
+	err := s.Database.Open()
 	if err != nil {
 		return fmt.Errorf("cannot open database: %v", err)
 	}
