@@ -21,8 +21,8 @@ func (h Handler) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 		return
 	}
 	path = strings.TrimRight(path, "/")
-	if strings.HasSuffix(path, ".md") {
-		url := "/p/" + strings.TrimSuffix(path, ".md")
+	if strings.HasSuffix(path, Extension) {
+		url := "/p/" + strings.TrimSuffix(path, Extension)
 		http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 		return
 	}
@@ -86,7 +86,7 @@ func (h Handler) Page(urlPath string) (*Page, error) {
 	}
 
 	// article page
-	p = h.Server.Repository.Path.Join(urlPath + ".md")
+	p = h.Server.Repository.Path.Join(urlPath + Extension)
 	isfile, err := p.IsFile()
 	if err != nil {
 		return nil, err

@@ -59,6 +59,6 @@ func (s *Server) Close() error {
 	return s.Database.Close()
 }
 
-func (s *Server) Serve() error {
-	return http.ListenAndServe("127.0.0.1:1337", s.router)
+func (s *Server) Serve(addr string) error {
+	return http.ListenAndServe(addr, s.router)
 }
