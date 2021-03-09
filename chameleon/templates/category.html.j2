@@ -56,6 +56,15 @@
         <i class="far fa-user" title="author" data-bs-toggle="tooltip" data-bs-placement="right"></i>
         {{ (last .Article.Commits).Name }}
       </div>
+
+      <div>
+        <a class="btn btn-outline-primary btn-sm" href="{{ .URLs.Linter }}">
+          linter
+        </a>
+        <a class="btn btn-outline-primary btn-sm" href="{{ .URLs.Commits }}">
+          commits
+        </a>
+      </div>
     </div>
   {{end}}
 {{end}}

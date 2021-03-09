@@ -75,6 +75,10 @@ func (h Handler) Page(urlPath string) (*Page, error) {
 				Path:       p.Join(ReadMe),
 			},
 			Views: h.Server.Database.Views(p),
+			URLs: URLs{
+				Repository: h.Server.Repository,
+				Path:       p,
+			},
 		}
 		if urlPath != "" && urlPath != "/" {
 			page.Parent = &Category{
@@ -102,6 +106,10 @@ func (h Handler) Page(urlPath string) (*Page, error) {
 				Path:       p,
 			},
 			Views: h.Server.Database.Views(p),
+			URLs: URLs{
+				Repository: h.Server.Repository,
+				Path:       p,
+			},
 		}
 		return &page, nil
 	}

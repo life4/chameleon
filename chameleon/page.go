@@ -10,6 +10,7 @@ type Page struct {
 	Parent   *Category
 	Category *Category
 	Views    *Views
+	URLs     URLs
 }
 
 func (p Page) Render(t *template.Template) (string, error) {

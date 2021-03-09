@@ -40,15 +40,15 @@ func (s *Server) Init() error {
 		http.FileServer(http.FS(assets)),
 	)
 	s.router.GET(
-		"/p/*filepath",
+		ArticlePrefix+"*filepath",
 		Handler{Server: s, Template: TemplateArticle}.Handle,
 	)
 	s.router.GET(
-		"/linter/*filepath",
+		LinterPrefix+"*filepath",
 		Handler{Server: s, Template: TemplateLinter}.Handle,
 	)
 	s.router.GET(
-		"/commits/*filepath",
+		CommitsPrefix+"*filepath",
 		Handler{Server: s, Template: TemplateCommits}.Handle,
 	)
 

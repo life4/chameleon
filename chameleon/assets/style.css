@@ -36,15 +36,15 @@
 }
 
 .level-error {
-	color: red;
+	color: #EA2027;
 }
 
 .level-warning {
-	color: yellow;
+	color: #EE5A24;
 }
 
 .level-suggestion {
-	color: green;
+	color: #009432;
 }
 
 .content img {

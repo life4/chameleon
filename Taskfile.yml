@@ -4,9 +4,7 @@ version: "3"
 tasks:
   go:run:
     sources:
-      - assets/*
-      - templates/*
-      - chameleon/*
+      - chameleon/
       - main.go
     cmds:
       - go run .

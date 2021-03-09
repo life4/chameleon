@@ -21,7 +21,12 @@ func run(logger *zap.Logger) error {
 	if err != nil {
 		return fmt.Errorf("cannot init repos: %v", err)
 	}
-	defer s.Close()
+	defer func() {
+		err := s.Close()
+		if err != nil {
+			logger.Error("cannot close connection", zap.Error(err))
+		}
+	}()
 
 	sch := gocron.NewScheduler(time.UTC)
 	_, err = sch.Every(config.Pull).Do(func() {

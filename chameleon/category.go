@@ -1,10 +1,5 @@
 package chameleon
 
-const (
-	Extension = ".md"
-	ReadMe    = "README.md"
-)
-
 type Category struct {
 	Repository Repository
 	Path       Path
