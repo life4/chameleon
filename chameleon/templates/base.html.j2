@@ -29,28 +29,28 @@
 
   <body class="bg-white text-body">
 
-    <div class="container header">
-      {{block "header" .}}
-      {{end}}
-    </div>
-
     <div class="container-lg content">
-      {{block "content" .}}
-        No content
-      {{end}}
+      <div class="row header">
+        {{block "header" .}}
+        {{end}}
+      </div>
+      <div class="row">
+        {{ block "sidebar" . }}{{ end }}
+        <div class="col">
+          {{ block "content" . }}{{ end }}
+        </div>
+      </div>
     </div>
-
-    <div class="container toc">
-      {{block "toc" .}}
-      {{end}}
-    </div>
-
-    <div class="container footer">
-      {{block "footer" .}}
-      {{end}}
-    </div>
+    {{block "toc" .}}{{end}}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <script>
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+      })
+    </script>
+
 
     <!-- https://www.mathjax.org/ -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>

@@ -13,18 +13,20 @@
 
 {{define "toc"}}
   {{if .Category}}
-    <ul>
-      {{range .Category.Categories}}
-        <li>
-          <a href="./{{ .Path.Name }}/">{{ .Article.Title }}</a>
-        </li>
-      {{end}}
-      {{range .Category.Articles}}
-        <li>
-          <a href="./{{ .Path.Name }}/">{{ .Title }}</a>
-        </li>
-      {{end}}
-    </ul>
+    <div class="container-fluid text-light bg-dark text-center lead">
+      <ul class="text-start" style="display: inline-block">
+        {{range .Category.Categories}}
+          <li>
+            <a href="./{{ .Path.Name }}/" class="link-light">{{ .Article.Title }}</a>
+          </li>
+        {{end}}
+        {{range .Category.Articles}}
+          <li>
+            <a href="./{{ .Path.Name }}/" class="link-light">{{ .Title }}</a>
+          </li>
+        {{end}}
+      </ul>
+    </div>
   {{end}}
 {{end}}
 
@@ -32,26 +34,28 @@
   {{ .Article.HTML }}
 {{end}}
 
-{{define "footer"}}
-  <span class="statblock">
-    <i class="far fa-eye"></i>
-    views:
-    {{ .Views.Get }}
-  </span>
+{{define "sidebar"}}
+  {{if not .Category}}
+    <div class="col-lg-2 col-md-3">
+      <div>
+        <i class="far fa-eye" title="views" data-bs-toggle="tooltip" data-bs-placement="right"></i>
+        {{ .Views.Get }}
+      </div>
 
-  <span class="statblock">
-    <i class="far fa-save"></i>
-    created
-    {{ (last .Article.Commits).Time | date }}
-    by
-    {{ (last .Article.Commits).Name }}
-  </span>
+      <div>
+        <i class="far fa-save" title="created" data-bs-toggle="tooltip" data-bs-placement="right"></i>
+        {{ (last .Article.Commits).Time | date }}
+      </div>
 
-  <span class="statblock">
-    <i class="far fa-edit"></i>
-    edited
-    {{ (first .Article.Commits).Time | date }}
-    by
-    {{ (first .Article.Commits).Name }}
-  </span>
+      <div>
+        <i class="far fa-edit" title="edited" data-bs-toggle="tooltip" data-bs-placement="right"></i>
+        {{ (first .Article.Commits).Time | date }}
+      </div>
+
+      <div>
+        <i class="far fa-user" title="author" data-bs-toggle="tooltip" data-bs-placement="right"></i>
+        {{ (last .Article.Commits).Name }}
+      </div>
+    </div>
+  {{end}}
 {{end}}

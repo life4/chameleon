@@ -100,7 +100,7 @@ func (a *Article) Title() (string, error) {
 
 func (a Article) Commits() ([]Commit, error) {
 	p := a.Path.Relative(a.Repository.Path)
-	cmd := a.Repository.Command("log", "--pretty=%H|%cI|%cn|%ce", p.String())
+	cmd := a.Repository.Command("log", "--pretty=%H|%cI|%an|%ae", p.String())
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return nil, fmt.Errorf("%v: %s", err, out)
