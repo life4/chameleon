@@ -121,5 +121,6 @@ func (h Handler) Page(urlPath string) (Page, error) {
 		return &page, nil
 	}
 
-	return nil, fmt.Errorf("file not found")
+	page := Page404{Views: h.Server.Database.Views(p)}
+	return page, nil
 }
