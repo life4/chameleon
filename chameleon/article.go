@@ -98,6 +98,10 @@ func (a *Article) Title() (string, error) {
 	return a.title, nil
 }
 
+func (a Article) Slug() string {
+	return strings.TrimSuffix(a.Path.Name(), Extension)
+}
+
 func (a Article) Commits() ([]Commit, error) {
 	p := a.Path.Relative(a.Repository.Path)
 	cmd := a.Repository.Command("log", "--pretty=%H|%cI|%an|%ae", p.String())

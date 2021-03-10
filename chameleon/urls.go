@@ -26,3 +26,7 @@ func (urls URLs) Linter() string {
 func (urls URLs) Commits() string {
 	return CommitsPrefix + urls.suffix()
 }
+
+func (urls URLs) Raw() string {
+	return ArticlePrefix + strings.TrimSuffix(urls.suffix(), "/") + Extension
+}

@@ -21,12 +21,6 @@ func (h Handler) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 		return
 	}
 	path = strings.TrimRight(path, "/")
-	if strings.HasSuffix(path, Extension) {
-		url := "/p/" + strings.TrimSuffix(path, Extension)
-		http.Redirect(w, r, url, http.StatusTemporaryRedirect)
-		return
-	}
-
 	page, err := h.Page(path)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
