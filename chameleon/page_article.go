@@ -2,6 +2,7 @@ package chameleon
 
 import (
 	"io"
+	"net/http"
 	"text/template"
 )
 
@@ -20,4 +21,8 @@ func (p PageArticle) Render(w io.Writer) error {
 
 func (p PageArticle) Inc() error {
 	return p.Views.Inc()
+}
+
+func (p PageArticle) Status() int {
+	return http.StatusOK
 }

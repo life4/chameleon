@@ -2,10 +2,10 @@ package chameleon
 
 import (
 	"io"
+	"net/http"
 )
 
 type Page404 struct {
-	Views *Views
 }
 
 func (p Page404) Render(w io.Writer) error {
@@ -13,5 +13,9 @@ func (p Page404) Render(w io.Writer) error {
 }
 
 func (p Page404) Inc() error {
-	return p.Views.Inc()
+	return nil
+}
+
+func (p Page404) Status() int {
+	return http.StatusNotFound
 }

@@ -32,6 +32,7 @@ func (h Handler) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	w.WriteHeader(page.Status())
 	err = page.Render(w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -45,6 +46,10 @@ func (h Handler) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 }
 
 func (h Handler) Page(urlPath string) (Page, error) {
+	if strings.Contains(urlPath, "/.") {
+		return Page404{}, nil
+	}
+
 	p := h.Server.Repository.Path.Join(urlPath)
 
 	// category page
@@ -82,7 +87,7 @@ func (h Handler) Page(urlPath string) (Page, error) {
 				Path:       p.Parent(),
 			}
 		}
-		return &page, nil
+		return page, nil
 	}
 
 	// raw file
@@ -92,7 +97,7 @@ func (h Handler) Page(urlPath string) (Page, error) {
 	}
 	if isfile {
 		page := PageAsset{Path: p}
-		return &page, nil
+		return page, nil
 	}
 
 	// article page
@@ -118,9 +123,8 @@ func (h Handler) Page(urlPath string) (Page, error) {
 			},
 			Template: h.Template,
 		}
-		return &page, nil
+		return page, nil
 	}
 
-	page := Page404{Views: h.Server.Database.Views(p)}
-	return page, nil
+	return Page404{}, nil
 }

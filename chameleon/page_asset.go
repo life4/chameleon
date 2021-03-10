@@ -2,6 +2,7 @@ package chameleon
 
 import (
 	"io"
+	"net/http"
 )
 
 type PageAsset struct {
@@ -23,4 +24,8 @@ func (page PageAsset) Render(w io.Writer) error {
 
 func (page PageAsset) Inc() error {
 	return nil
+}
+
+func (p PageAsset) Status() int {
+	return http.StatusOK
 }
