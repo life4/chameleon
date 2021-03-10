@@ -47,7 +47,7 @@ func (h Handler) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 
 func (h Handler) Page(urlPath string) (Page, error) {
 	if strings.Contains(urlPath, "/.") {
-		return Page404{}, nil
+		return Page403{}, nil
 	}
 
 	p := h.Server.Repository.Path.Join(urlPath)
