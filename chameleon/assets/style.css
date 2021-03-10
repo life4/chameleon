@@ -21,18 +21,15 @@
 
 .avatar {
 	opacity: .9;
+	border-radius: .5em;
+	width: 1em;
+	height: 1em;
+	box-shadow: 0 0 1px;
 }
 
 .avatar:hover {
 	text-decoration: none;
 	opacity: 1;
-}
-
-.avatar img {
-	border-radius: 25px;
-	width: 50px;
-	height: 50px;
-	box-shadow: 0 0 1px;
 }
 
 .level-error {

@@ -7,4 +7,5 @@ type Commit struct {
 	Time time.Time
 	Name string
 	Mail string
+	Msg  string
 }

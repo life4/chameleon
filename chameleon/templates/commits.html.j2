@@ -12,24 +12,15 @@
 {{end}}
 
 {{define "content"}}
-  <table class="table table-sm align-middle" style="text-align: left">
-    <tr>
-      <th>hash</th>
-      <th>date</th>
-      <th>author</th>
-      <th></th>
-    </tr>
+  <ul>
     {{ range .Article.Commits }}
-      <tr>
-        <td>{{ .Hash }}</td>
-        <td>{{ .Time | date }}</td>
-        <td>{{ .Name }}</td>
-        <td>
-          <a href="mailto:{{.Mail}}" class="avatar">
-            <img src="{{ .Mail | gravatar }}" />
-          </a>
-        </td>
-      </tr>
+      <li>
+        {{ .Time | date }}
+        by
+        <img src="{{ .Mail | gravatar }}" class="avatar" />
+        <a href="mailto:{{.Mail}}">{{ .Name }}</a>:
+        {{ .Msg }}
+      </li>
     {{end}}
-  </table>
+  <ul>
 {{end}}

@@ -104,7 +104,7 @@ func (a Article) Slug() string {
 
 func (a Article) Commits() ([]Commit, error) {
 	p := a.Path.Relative(a.Repository.Path)
-	cmd := a.Repository.Command("log", "--pretty=%H|%cI|%an|%ae", p.String())
+	cmd := a.Repository.Command("log", "--pretty=%H|%cI|%an|%ae|%s", p.String())
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return nil, fmt.Errorf("%v: %s", err, out)
@@ -123,6 +123,7 @@ func (a Article) Commits() ([]Commit, error) {
 			Time: t,
 			Name: parts[2],
 			Mail: parts[3],
+			Msg:  parts[4],
 		}
 	}
 	return commits, nil
