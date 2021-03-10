@@ -7,4 +7,5 @@ const (
 	MainPrefix    = "/p/"
 	LinterPrefix  = "/linter/"
 	CommitsPrefix = "/commits/"
+	DiffPrefix    = "/diff/"
 )

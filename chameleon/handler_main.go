@@ -9,12 +9,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-type Handler struct {
+type HandlerMain struct {
 	Template *template.Template
 	Server   *Server
 }
 
-func (h Handler) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (h HandlerMain) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	path := ps.ByName("filepath")
 	path = strings.TrimRight(path, "/")
 	page, err := h.Page(path)
@@ -35,7 +35,7 @@ func (h Handler) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 	}
 }
 
-func (h Handler) Page(urlPath string) (Page, error) {
+func (h HandlerMain) Page(urlPath string) (Page, error) {
 	if strings.Contains(urlPath, "/.") {
 		return Page403{}, nil
 	}

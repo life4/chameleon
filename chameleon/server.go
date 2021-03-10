@@ -37,15 +37,19 @@ func (s *Server) Init() error {
 	)
 	s.router.GET(
 		MainPrefix+"*filepath",
-		Handler{Server: s, Template: TemplateArticle}.Handle,
+		HandlerMain{Server: s, Template: TemplateArticle}.Handle,
 	)
 	s.router.GET(
 		LinterPrefix+"*filepath",
-		Handler{Server: s, Template: TemplateLinter}.Handle,
+		HandlerMain{Server: s, Template: TemplateLinter}.Handle,
 	)
 	s.router.GET(
 		CommitsPrefix+"*filepath",
-		Handler{Server: s, Template: TemplateCommits}.Handle,
+		HandlerMain{Server: s, Template: TemplateCommits}.Handle,
+	)
+	s.router.GET(
+		DiffPrefix+":hash",
+		HandlerDiff{Server: s}.Handle,
 	)
 
 	return nil

@@ -18,6 +18,7 @@ var (
 	TemplateCommits = parseTemplate("templates/commits.html.j2")
 	Template403     = parseTemplate("templates/403.html.j2")
 	Template404     = parseTemplate("templates/404.html.j2")
+	TemplateDiff    = parseTemplate("templates/diff.html.j2")
 )
 
 func parseTemplate(tname string) *template.Template {

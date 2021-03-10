@@ -15,7 +15,9 @@
   <ul>
     {{ range .Article.Commits }}
       <li>
-        {{ .Time | date }}
+        <a href="/diff/{{ .Hash }}">
+          {{ .Time | date }}
+        </a>
         by
         <img src="{{ .Mail | gravatar }}" class="avatar" />
         <a href="mailto:{{.Mail}}">{{ .Name }}</a>:

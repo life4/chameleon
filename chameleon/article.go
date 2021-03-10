@@ -6,7 +6,6 @@ import (
 	"os"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/enescakir/emoji"
 	"gopkg.in/russross/blackfriday.v2"
@@ -112,18 +111,9 @@ func (a Article) Commits() ([]Commit, error) {
 	lines := strings.Split(strings.TrimSpace(string(out)), "\n")
 	commits := make([]Commit, len(lines))
 	for i, line := range lines {
-		line := strings.TrimSpace(line)
-		parts := strings.Split(line, "|")
-		t, err := time.Parse(ISO8601, parts[1])
+		commits[i], err = ParseCommit(line)
 		if err != nil {
 			return nil, err
-		}
-		commits[i] = Commit{
-			Hash: parts[0],
-			Time: t,
-			Name: parts[2],
-			Mail: parts[3],
-			Msg:  parts[4],
 		}
 	}
 	return commits, nil
