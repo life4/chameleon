@@ -101,7 +101,7 @@ func (a Article) Slug() string {
 	return strings.TrimSuffix(a.Path.Name(), Extension)
 }
 
-func (a Article) Commits() ([]Commit, error) {
+func (a Article) Commits() (Commits, error) {
 	p := a.Path.Relative(a.Repository.Path)
 	cmd := a.Repository.Command("log", "--pretty=%H|%cI|%an|%ae|%s", p.String())
 	out, err := cmd.CombinedOutput()
@@ -109,7 +109,7 @@ func (a Article) Commits() ([]Commit, error) {
 		return nil, fmt.Errorf("%v: %s", err, out)
 	}
 	lines := strings.Split(strings.TrimSpace(string(out)), "\n")
-	commits := make([]Commit, len(lines))
+	commits := make(Commits, len(lines))
 	for i, line := range lines {
 		commits[i], err = ParseCommit(line)
 		if err != nil {

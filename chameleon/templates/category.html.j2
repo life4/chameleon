@@ -22,6 +22,7 @@
         {{end}}
         {{range .Category.Articles}}
           <li>
+            {{ (first .Commits).Time | date }}
             <a href="{{ .URLs.Main }}" class="link-light">{{ .Title }}</a>
           </li>
         {{end}}

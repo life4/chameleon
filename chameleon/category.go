@@ -46,8 +46,8 @@ func (c Category) Categories() ([]Category, error) {
 	return cats, nil
 }
 
-func (c Category) Articles() ([]*Article, error) {
-	arts := make([]*Article, 0)
+func (c Category) Articles() (Articles, error) {
+	arts := make(Articles, 0)
 	paths, err := c.Path.SubPaths()
 	if err != nil {
 		return nil, err
@@ -69,6 +69,7 @@ func (c Category) Articles() ([]*Article, error) {
 		}
 		arts = append(arts, art)
 	}
+	arts.Sort()
 	return arts, nil
 }
 

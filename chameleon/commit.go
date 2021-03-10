@@ -5,6 +5,20 @@ import (
 	"time"
 )
 
+type Commits []Commit
+
+func (c Commits) Len() int {
+	return len(c)
+}
+
+func (c Commits) First() Commit {
+	return c[0]
+}
+
+func (c Commits) Last() Commit {
+	return c[len(c)-1]
+}
+
 type Commit struct {
 	Hash string
 	Time time.Time
