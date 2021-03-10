@@ -82,3 +82,7 @@ func (p Path) SubPaths() ([]Path, error) {
 	}
 	return result, nil
 }
+
+func (p Path) Open() (*os.File, error) {
+	return os.Open(p.String())
+}

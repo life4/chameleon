@@ -1,0 +1,23 @@
+package chameleon
+
+import (
+	"io"
+	"text/template"
+)
+
+type PageArticle struct {
+	Article  Article
+	Parent   *Category
+	Category *Category
+	Views    *Views
+	URLs     URLs
+	Template *template.Template
+}
+
+func (p PageArticle) Render(w io.Writer) error {
+	return p.Template.Execute(w, &p)
+}
+
+func (p PageArticle) Inc() error {
+	return p.Views.Inc()
+}

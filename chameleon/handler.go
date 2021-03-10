@@ -32,24 +32,19 @@ func (h Handler) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	content, err := page.Render(h.Template)
+	err = page.Render(w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	_, err = w.Write([]byte(content))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	err = page.Views.Inc()
+	err = page.Inc()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-func (h Handler) Page(urlPath string) (*Page, error) {
+func (h Handler) Page(urlPath string) (Page, error) {
 	p := h.Server.Repository.Path.Join(urlPath)
 
 	// category page
@@ -65,7 +60,7 @@ func (h Handler) Page(urlPath string) (*Page, error) {
 		if !isfile {
 			return nil, fmt.Errorf("README.md not found")
 		}
-		page := Page{
+		page := PageArticle{
 			Category: &Category{
 				Repository: h.Server.Repository,
 				Path:       p,
@@ -79,6 +74,7 @@ func (h Handler) Page(urlPath string) (*Page, error) {
 				Repository: h.Server.Repository,
 				Path:       p,
 			},
+			Template: h.Template,
 		}
 		if urlPath != "" && urlPath != "/" {
 			page.Parent = &Category{
@@ -89,14 +85,24 @@ func (h Handler) Page(urlPath string) (*Page, error) {
 		return &page, nil
 	}
 
-	// article page
-	p = h.Server.Repository.Path.Join(urlPath + Extension)
+	// raw file
 	isfile, err := p.IsFile()
 	if err != nil {
 		return nil, err
 	}
 	if isfile {
-		page := Page{
+		page := PageAsset{Path: p}
+		return &page, nil
+	}
+
+	// article page
+	p = h.Server.Repository.Path.Join(urlPath + Extension)
+	isfile, err = p.IsFile()
+	if err != nil {
+		return nil, err
+	}
+	if isfile {
+		page := PageArticle{
 			Parent: &Category{
 				Repository: h.Server.Repository,
 				Path:       p.Parent(),
@@ -110,6 +116,7 @@ func (h Handler) Page(urlPath string) (*Page, error) {
 				Repository: h.Server.Repository,
 				Path:       p,
 			},
+			Template: h.Template,
 		}
 		return &page, nil
 	}

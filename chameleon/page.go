@@ -1,23 +1,10 @@
 package chameleon
 
 import (
-	"bytes"
-	"text/template"
+	"io"
 )
 
-type Page struct {
-	Article  Article
-	Parent   *Category
-	Category *Category
-	Views    *Views
-	URLs     URLs
-}
-
-func (p Page) Render(t *template.Template) (string, error) {
-	var buf bytes.Buffer
-	err := t.Execute(&buf, &p)
-	if err != nil {
-		return "", err
-	}
-	return buf.String(), nil
+type Page interface {
+	Render(io.Writer) error
+	Inc() error
 }
