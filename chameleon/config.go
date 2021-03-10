@@ -21,9 +21,9 @@ func NewConfig() Config {
 }
 
 func (c Config) Parse() Config {
-	pflag.StringVar(&c.RepoPath, "--path", c.RepoPath, "path to the repository")
-	pflag.DurationVar(&c.Pull, "--pull", c.Pull, "how often to pull the repo")
-	pflag.StringVar(&c.Address, "--addr", c.Address, "address to serve")
+	pflag.StringVar(&c.RepoPath, "path", c.RepoPath, "path to the repository")
+	pflag.DurationVar(&c.Pull, "pull", c.Pull, "how often to pull the repo")
+	pflag.StringVar(&c.Address, "addr", c.Address, "address to serve")
 	pflag.Parse()
 	return c
 }
