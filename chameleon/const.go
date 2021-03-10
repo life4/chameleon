@@ -4,7 +4,7 @@ const (
 	Extension = ".md"
 	ReadMe    = "README.md"
 
-	ArticlePrefix = "/p/"
+	MainPrefix    = "/p/"
 	LinterPrefix  = "/linter/"
 	CommitsPrefix = "/commits/"
 )

@@ -71,3 +71,7 @@ func (c Category) Articles() ([]*Article, error) {
 	}
 	return arts, nil
 }
+
+func (c Category) URLs() URLs {
+	return URLs(c)
+}

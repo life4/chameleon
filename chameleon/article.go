@@ -127,3 +127,10 @@ func (a Article) Commits() ([]Commit, error) {
 	}
 	return commits, nil
 }
+
+func (a Article) URLs() URLs {
+	return URLs{
+		Repository: a.Repository,
+		Path:       a.Path,
+	}
+}

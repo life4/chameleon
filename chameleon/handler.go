@@ -16,10 +16,6 @@ type Handler struct {
 
 func (h Handler) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	path := ps.ByName("filepath")
-	if !strings.HasSuffix(path, "/") {
-		http.Redirect(w, r, r.URL.Path+"/", http.StatusTemporaryRedirect)
-		return
-	}
 	path = strings.TrimRight(path, "/")
 	page, err := h.Page(path)
 	if err != nil {
@@ -68,11 +64,7 @@ func (h Handler) Page(urlPath string) (Page, error) {
 				Repository: h.Server.Repository,
 				Path:       p.Join(ReadMe),
 			},
-			Views: h.Server.Database.Views(p),
-			URLs: URLs{
-				Repository: h.Server.Repository,
-				Path:       p,
-			},
+			Views:    h.Server.Database.Views(p),
 			Template: h.Template,
 		}
 		if urlPath != "" && urlPath != "/" {
@@ -110,11 +102,7 @@ func (h Handler) Page(urlPath string) (Page, error) {
 				Repository: h.Server.Repository,
 				Path:       p,
 			},
-			Views: h.Server.Database.Views(p),
-			URLs: URLs{
-				Repository: h.Server.Repository,
-				Path:       p,
-			},
+			Views:    h.Server.Database.Views(p),
 			Template: h.Template,
 		}
 		return page, nil

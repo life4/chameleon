@@ -5,7 +5,7 @@
 {{define "header"}}
   <h1>
     {{if .Parent}}
-      <a href="../">{{ .Parent.Article.Title }}</a> /
+      <a href="{{ .Parent.URLs.Main }}">{{ .Parent.Article.Title }}</a> /
     {{end}}
     {{ .Article.Title }}
   </h1>
@@ -17,12 +17,12 @@
       <ul class="text-start" style="display: inline-block">
         {{range .Category.Categories}}
           <li>
-            <a href="./{{ .Path.Name }}/" class="link-light">{{ .Article.Title }}</a>
+            <a href="{{ .URLs.Main }}" class="link-light">{{ .Article.Title }}</a>
           </li>
         {{end}}
         {{range .Category.Articles}}
           <li>
-            <a href="./{{ .Slug }}/" class="link-light">{{ .Title }}</a>
+            <a href="{{ .URLs.Main }}" class="link-light">{{ .Title }}</a>
           </li>
         {{end}}
       </ul>
@@ -58,13 +58,13 @@
       </div>
 
       <div class="d-grid gap-2">
-        <a class="btn btn-outline-primary btn-sm" href="{{ .URLs.Linter }}">
+        <a class="btn btn-outline-primary btn-sm" href="{{ .Article.URLs.Linter }}">
           linter
         </a>
-        <a class="btn btn-outline-primary btn-sm" href="{{ .URLs.Commits }}">
+        <a class="btn btn-outline-primary btn-sm" href="{{ .Article.URLs.Commits }}">
           commits
         </a>
-        <a class="btn btn-outline-primary btn-sm" href="{{ .URLs.Raw }}">
+        <a class="btn btn-outline-primary btn-sm" href="{{ .Article.URLs.Raw }}">
           raw
         </a>
       </div>

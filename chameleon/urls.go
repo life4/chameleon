@@ -12,11 +12,14 @@ type URLs struct {
 func (urls URLs) suffix() string {
 	s := urls.Path.Relative(urls.Repository.Path).String()
 	s = strings.TrimSuffix(s, Extension)
+	if s == "" {
+		return s
+	}
 	return s + "/"
 }
 
-func (urls URLs) Article() string {
-	return ArticlePrefix + urls.suffix()
+func (urls URLs) Main() string {
+	return MainPrefix + urls.suffix()
 }
 
 func (urls URLs) Linter() string {
@@ -28,5 +31,5 @@ func (urls URLs) Commits() string {
 }
 
 func (urls URLs) Raw() string {
-	return ArticlePrefix + strings.TrimSuffix(urls.suffix(), "/") + Extension
+	return MainPrefix + strings.TrimSuffix(urls.suffix(), "/") + Extension
 }

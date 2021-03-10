@@ -19,6 +19,9 @@ func (p Path) Name() string {
 }
 
 func (p Path) Relative(to Path) Path {
+	if p == to {
+		return ""
+	}
 	return Path(strings.TrimPrefix(p.String(), to.String()+"/"))
 }
 

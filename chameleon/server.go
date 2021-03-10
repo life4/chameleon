@@ -36,7 +36,7 @@ func (s *Server) Init() error {
 		http.FileServer(http.FS(assets)),
 	)
 	s.router.GET(
-		ArticlePrefix+"*filepath",
+		MainPrefix+"*filepath",
 		Handler{Server: s, Template: TemplateArticle}.Handle,
 	)
 	s.router.GET(

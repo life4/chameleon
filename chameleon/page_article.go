@@ -11,7 +11,6 @@ type PageArticle struct {
 	Parent   *Category
 	Category *Category
 	Views    *Views
-	URLs     URLs
 	Template *template.Template
 }
 
