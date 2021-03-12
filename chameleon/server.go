@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 	"net/http"
+	"net/http/pprof"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -17,7 +18,7 @@ type Server struct {
 	router     *httprouter.Router
 }
 
-func (s *Server) Init() error {
+func (s *Server) Init(debug bool) error {
 	s.Database = &Database{}
 	err := s.Database.Open()
 	if err != nil {
@@ -52,6 +53,13 @@ func (s *Server) Init() error {
 		HandlerDiff{Server: s}.Handle,
 	)
 
+	if debug {
+		s.router.HandlerFunc("GET", "/debug/pprof/", pprof.Index)
+		s.router.HandlerFunc("GET", "/debug/pprof/cmdline", pprof.Cmdline)
+		s.router.HandlerFunc("GET", "/debug/pprof/profile", pprof.Profile)
+		s.router.HandlerFunc("GET", "/debug/pprof/symbol", pprof.Symbol)
+		s.router.HandlerFunc("GET", "/debug/pprof/trace", pprof.Trace)
+	}
 	return nil
 }
 

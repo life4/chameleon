@@ -11,6 +11,7 @@ type Config struct {
 	Pull     time.Duration
 	RepoPath string
 	RepoURL  string
+	PProf    bool
 }
 
 func NewConfig() Config {
@@ -27,6 +28,7 @@ func (c Config) Parse() Config {
 	pflag.StringVar(&c.RepoURL, "url", c.RepoURL, "clone URL for repo if not exist")
 	pflag.DurationVar(&c.Pull, "pull", c.Pull, "how often to pull the repo")
 	pflag.StringVar(&c.Address, "addr", c.Address, "address to serve")
+	pflag.BoolVar(&c.PProf, "pprof", c.PProf, "serve pprof endpoints")
 	pflag.Parse()
 	return c
 }
