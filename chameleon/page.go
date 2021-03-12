@@ -6,6 +6,6 @@ import (
 
 type Page interface {
 	Render(io.Writer) error
-	Inc() error
+	Inc()
 	Status() int
 }

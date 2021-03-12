@@ -17,6 +17,7 @@ func run(logger *zap.Logger) error {
 	server := chameleon.Server{
 		Repository: repo,
 		Database:   &chameleon.Database{},
+		Logger:     logger,
 	}
 
 	err = server.Database.Open(config.DBPath)

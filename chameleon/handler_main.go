@@ -7,6 +7,7 @@ import (
 	"text/template"
 
 	"github.com/julienschmidt/httprouter"
+	"go.uber.org/zap"
 )
 
 type HandlerMain struct {
@@ -19,20 +20,18 @@ func (h HandlerMain) Handle(w http.ResponseWriter, r *http.Request, ps httproute
 	path = strings.TrimRight(path, "/")
 	page, err := h.Page(path)
 	if err != nil {
+		h.Server.Logger.Error("cannot get page", zap.Error(err), zap.String("path", path))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(page.Status())
 	err = page.Render(w)
 	if err != nil {
+		h.Server.Logger.Error("cannot render page", zap.Error(err), zap.String("path", path))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = page.Inc()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	page.Inc()
 }
 
 func (h HandlerMain) Page(urlPath string) (Page, error) {
@@ -66,6 +65,7 @@ func (h HandlerMain) Page(urlPath string) (Page, error) {
 			},
 			Views:    h.Server.Database.Views(p),
 			Template: h.Template,
+			Logger:   h.Server.Logger,
 		}
 		if urlPath != "" && urlPath != "/" {
 			page.Parent = &Category{
@@ -104,6 +104,7 @@ func (h HandlerMain) Page(urlPath string) (Page, error) {
 			},
 			Views:    h.Server.Database.Views(p),
 			Template: h.Template,
+			Logger:   h.Server.Logger,
 		}
 		return page, nil
 	}

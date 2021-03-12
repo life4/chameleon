@@ -22,9 +22,7 @@ func (page PageAsset) Render(w io.Writer) error {
 	return err
 }
 
-func (page PageAsset) Inc() error {
-	return nil
-}
+func (page PageAsset) Inc() {}
 
 func (p PageAsset) Status() int {
 	return http.StatusOK

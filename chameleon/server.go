@@ -6,6 +6,7 @@ import (
 	"net/http/pprof"
 
 	"github.com/julienschmidt/httprouter"
+	"go.uber.org/zap"
 )
 
 //go:embed assets/*
@@ -14,6 +15,7 @@ var assets embed.FS
 type Server struct {
 	Repository Repository
 	Database   *Database
+	Logger     *zap.Logger
 	router     *httprouter.Router
 }
 
@@ -47,6 +49,7 @@ func (s *Server) Init(debug bool) {
 	)
 
 	if debug {
+		s.Logger.Debug("debugging enabled", zap.String("endpoint", "/debug/pprof/"))
 		s.router.HandlerFunc("GET", "/debug/pprof/", pprof.Index)
 		s.router.HandlerFunc("GET", "/debug/pprof/cmdline", pprof.Cmdline)
 		s.router.HandlerFunc("GET", "/debug/pprof/profile", pprof.Profile)
