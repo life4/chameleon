@@ -17,7 +17,12 @@ func run(logger *zap.Logger) error {
 		Repository: repo,
 	}
 
-	err := server.Init()
+	err := repo.Clone(config.RepoURL)
+	if err != nil {
+		return fmt.Errorf("cannot clone repo: %v", err)
+	}
+
+	err = server.Init()
 	if err != nil {
 		return fmt.Errorf("cannot init repos: %v", err)
 	}
