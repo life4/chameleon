@@ -2,7 +2,11 @@ package chameleon
 
 import (
 	"fmt"
+	"net/url"
 	"os/exec"
+	"strings"
+
+	giturls "github.com/whilp/git-urls"
 )
 
 const CloneURL = "https://github.com/%s.git"
@@ -24,6 +28,26 @@ func (r Repository) Pull() error {
 		return fmt.Errorf("cannot pull repo: %v", err)
 	}
 	return nil
+}
+
+func (r Repository) Remote() (*url.URL, error) {
+	c := r.Command("remote", "get-url", "origin")
+	out, err := c.CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+	rawURL := strings.TrimSpace(string(out))
+	return giturls.Parse(rawURL)
+}
+
+func (r Repository) Branch() (string, error) {
+	c := r.Command("rev-parse", "--abbrev-ref", "HEAD")
+	out, err := c.CombinedOutput()
+	if err != nil {
+		return "", err
+	}
+	branch := strings.TrimSpace(string(out))
+	return branch, nil
 }
 
 func (r Repository) Clone(url string) error {

@@ -68,6 +68,11 @@
         <a class="btn btn-outline-primary btn-sm" href="{{ .Article.URLs.Raw }}">
           raw
         </a>
+        {{ if .Article.URLs.Edit }}
+          <a class="btn btn-outline-primary btn-sm" href="{{ .Article.URLs.Edit }}" target="_blank">
+            edit
+          </a>
+        {{ end }}
       </div>
     </div>
   {{end}}

@@ -1,7 +1,12 @@
 package chameleon
 
 import (
+	"fmt"
 	"strings"
+)
+
+const (
+	githubEditURL = "https://github.com/%s/edit/%s/%s"
 )
 
 type URLs struct {
@@ -32,4 +37,23 @@ func (urls URLs) Commits() string {
 
 func (urls URLs) Raw() string {
 	return MainPrefix + strings.TrimSuffix(urls.suffix(), "/") + Extension
+}
+
+func (urls URLs) Edit() (string, error) {
+	remote, err := urls.Repository.Remote()
+	if err != nil {
+		return "", err
+	}
+
+	if remote.Hostname() == "github.com" {
+		branch, err := urls.Repository.Branch()
+		if err != nil {
+			return "", err
+		}
+		repo := strings.TrimSuffix(remote.Path, ".git")
+		url := fmt.Sprintf(githubEditURL, repo, branch, urls.suffix())
+		return url, nil
+	}
+
+	return "", nil
 }
