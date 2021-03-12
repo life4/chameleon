@@ -11,11 +11,11 @@ func (c Commits) Len() int {
 	return len(c)
 }
 
-func (c Commits) First() Commit {
+func (c Commits) Edited() Commit {
 	return c[0]
 }
 
-func (c Commits) Last() Commit {
+func (c Commits) Created() Commit {
 	return c[len(c)-1]
 }
 

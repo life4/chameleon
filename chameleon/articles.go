@@ -11,7 +11,7 @@ func (a Articles) Len() int {
 func (a Articles) Less(i, j int) bool {
 	c1, _ := a[i].Commits()
 	c2, _ := a[j].Commits()
-	return c1.First().Time.Unix() < c2.First().Time.Unix()
+	return c1.Edited().Time.Unix() < c2.Edited().Time.Unix()
 }
 
 func (a Articles) Swap(i, j int) {

@@ -22,7 +22,7 @@
         {{end}}
         {{range .Category.Articles}}
           <li>
-            {{ (first .Commits).Time | date }}
+            {{ .Commits.Edited.Time | date }}
             <a href="{{ .URLs.Main }}" class="link-light">{{ .Title }}</a>
           </li>
         {{end}}
@@ -45,17 +45,17 @@
 
       <div>
         <i class="far fa-save" title="created" data-bs-toggle="tooltip" data-bs-placement="right"></i>
-        {{ (last .Article.Commits).Time | date }}
+        {{ .Article.Commits.Created.Time | date }}
       </div>
 
       <div>
         <i class="far fa-edit" title="edited" data-bs-toggle="tooltip" data-bs-placement="right"></i>
-        {{ (first .Article.Commits).Time | date }}
+        {{ .Article.Commits.Edited.Time | date }}
       </div>
 
       <div>
         <i class="far fa-user" title="author" data-bs-toggle="tooltip" data-bs-placement="right"></i>
-        {{ (last .Article.Commits).Name }}
+        {{ .Article.Commits.Created.Name }}
       </div>
 
       <div class="d-grid gap-2">

@@ -4,7 +4,6 @@ import (
 	"crypto/md5"
 	"embed"
 	"fmt"
-	"reflect"
 	"text/template"
 	"time"
 )
@@ -30,22 +29,6 @@ func parseTemplate(tname string) *template.Template {
 }
 
 var funcs = template.FuncMap{
-	"first": func(item reflect.Value) (reflect.Value, error) {
-		item, isNil := indirect(item)
-		if isNil {
-			return reflect.Value{}, fmt.Errorf("index of nil pointer")
-		}
-		item = item.Index(0)
-		return item, nil
-	},
-	"last": func(item reflect.Value) (reflect.Value, error) {
-		item, isNil := indirect(item)
-		if isNil {
-			return reflect.Value{}, fmt.Errorf("index of nil pointer")
-		}
-		item = item.Index(item.Len() - 1)
-		return item, nil
-	},
 	"date": func(item time.Time) string {
 		return item.Format("2006-01-02")
 	},
@@ -53,13 +36,4 @@ var funcs = template.FuncMap{
 		hash := md5.Sum([]byte(mail))
 		return fmt.Sprintf("https://www.gravatar.com/avatar/%x", hash)
 	},
-}
-
-func indirect(v reflect.Value) (rv reflect.Value, isNil bool) {
-	for ; v.Kind() == reflect.Ptr || v.Kind() == reflect.Interface; v = v.Elem() {
-		if v.IsNil() {
-			return v, true
-		}
-	}
-	return v, false
 }
