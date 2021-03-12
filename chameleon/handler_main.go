@@ -18,12 +18,33 @@ type HandlerMain struct {
 func (h HandlerMain) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	path := ps.ByName("filepath")
 	path = strings.TrimRight(path, "/")
+
+	// get page
 	page, err := h.Page(path)
 	if err != nil {
 		h.Server.Logger.Error("cannot get page", zap.Error(err), zap.String("path", path))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	// increment views count
+	_, err = r.Cookie("viewed")
+	if err == http.ErrNoCookie {
+		cookie := http.Cookie{
+			Name:   "viewed",
+			Value:  "1",
+			Path:   r.URL.Path,
+			MaxAge: 3600 * 24,
+		}
+		http.SetCookie(w, &cookie)
+		page.Inc()
+	} else if err != nil {
+		h.Server.Logger.Error("cannot get cookie", zap.Error(err), zap.String("path", path))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// render the page
 	w.WriteHeader(page.Status())
 	err = page.Render(w)
 	if err != nil {
@@ -31,7 +52,6 @@ func (h HandlerMain) Handle(w http.ResponseWriter, r *http.Request, ps httproute
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	page.Inc()
 }
 
 func (h HandlerMain) Page(urlPath string) (Page, error) {
