@@ -11,21 +11,25 @@ import (
 )
 
 func run(logger *zap.Logger) error {
+	var err error
 	config := chameleon.NewConfig().Parse()
 	repo := chameleon.Repository{Path: chameleon.Path(config.RepoPath)}
 	server := chameleon.Server{
 		Repository: repo,
+		Database:   &chameleon.Database{},
 	}
 
-	err := repo.Clone(config.RepoURL)
+	err = server.Database.Open(config.DBPath)
+	if err != nil {
+		return fmt.Errorf("cannot open database: %v", err)
+	}
+
+	err = repo.Clone(config.RepoURL)
 	if err != nil {
 		return fmt.Errorf("cannot clone repo: %v", err)
 	}
 
-	err = server.Init(config.PProf)
-	if err != nil {
-		return fmt.Errorf("cannot init repos: %v", err)
-	}
+	server.Init(config.PProf)
 	defer func() {
 		err := server.Close()
 		if err != nil {

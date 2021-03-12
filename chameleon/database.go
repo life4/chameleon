@@ -11,10 +11,10 @@ type Database struct {
 	db *bbolt.DB
 }
 
-func (db *Database) Open() error {
+func (db *Database) Open(path string) error {
 	var err error
-	opts := &bbolt.Options{Timeout: 1 * time.Second}
-	db.db, err = bbolt.Open(".database.bin", 0600, opts)
+	opts := &bbolt.Options{Timeout: 5 * time.Second}
+	db.db, err = bbolt.Open(path, 0600, opts)
 	if err != nil {
 		return fmt.Errorf("cannot open db: %v", err)
 	}

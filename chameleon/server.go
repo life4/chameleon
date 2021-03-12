@@ -2,7 +2,6 @@ package chameleon
 
 import (
 	"embed"
-	"fmt"
 	"net/http"
 	"net/http/pprof"
 
@@ -18,13 +17,7 @@ type Server struct {
 	router     *httprouter.Router
 }
 
-func (s *Server) Init(debug bool) error {
-	s.Database = &Database{}
-	err := s.Database.Open()
-	if err != nil {
-		return fmt.Errorf("cannot open database: %v", err)
-	}
-
+func (s *Server) Init(debug bool) {
 	s.router = httprouter.New()
 	s.router.Handler(
 		http.MethodGet,
@@ -60,7 +53,6 @@ func (s *Server) Init(debug bool) error {
 		s.router.HandlerFunc("GET", "/debug/pprof/symbol", pprof.Symbol)
 		s.router.HandlerFunc("GET", "/debug/pprof/trace", pprof.Trace)
 	}
-	return nil
 }
 
 func (s *Server) Close() error {
