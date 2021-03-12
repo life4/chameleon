@@ -14,6 +14,8 @@ Features:
 + Syntax highlighting ([Prism](https://prismjs.com/))
 + Formulas ([MathJax](https://www.mathjax.org/))
 + Emoji ([enescakir/emoji](https://github.com/enescakir/emoji))
++ Views count
++ Great performance and server-side caching
 
 ## Usage
 

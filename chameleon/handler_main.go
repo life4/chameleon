@@ -49,7 +49,10 @@ func (h HandlerMain) Handle(w http.ResponseWriter, r *http.Request, ps httproute
 	err = page.Render(w)
 	if err != nil {
 		h.Server.Logger.Error("cannot render page", zap.Error(err), zap.String("path", path))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		_, err = fmt.Fprint(w, err.Error())
+		if err != nil {
+			h.Server.Logger.Warn("cannot write response", zap.Error(err), zap.String("path", path))
+		}
 		return
 	}
 }

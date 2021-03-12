@@ -15,6 +15,7 @@ var (
 	TemplateArticle = parseTemplate("templates/category.html.j2")
 	TemplateLinter  = parseTemplate("templates/linter.html.j2")
 	TemplateCommits = parseTemplate("templates/commits.html.j2")
+	TemplateAuth    = parseTemplate("templates/auth.html.j2")
 	Template403     = parseTemplate("templates/403.html.j2")
 	Template404     = parseTemplate("templates/404.html.j2")
 	TemplateDiff    = parseTemplate("templates/diff.html.j2")

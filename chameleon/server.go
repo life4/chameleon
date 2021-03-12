@@ -17,6 +17,7 @@ type Server struct {
 	Database   *Database
 	Logger     *zap.Logger
 	Cache      *Cache
+	Auth       Auth
 	router     *httprouter.Router
 }
 
@@ -34,7 +35,11 @@ func (s *Server) Init(debug bool) {
 	)
 	s.router.GET(
 		MainPrefix+"*filepath",
-		s.Cache.Wrap(HandlerMain{Server: s, Template: TemplateArticle}.Handle),
+		s.Auth.Wrap(
+			s.Cache.Wrap(
+				HandlerMain{Server: s, Template: TemplateArticle}.Handle,
+			),
+		),
 	)
 	s.router.GET(
 		LinterPrefix+"*filepath",
@@ -48,6 +53,9 @@ func (s *Server) Init(debug bool) {
 		DiffPrefix+":hash",
 		HandlerDiff{Server: s}.Handle,
 	)
+
+	s.router.GET(AuthPrefix, s.Auth.HandleGET)
+	s.router.POST(AuthPrefix, s.Auth.HandlePOST)
 
 	if debug {
 		s.Logger.Debug("debugging enabled", zap.String("endpoint", "/debug/pprof/"))

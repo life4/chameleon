@@ -8,4 +8,5 @@ const (
 	LinterPrefix  = "/linter/"
 	CommitsPrefix = "/commits/"
 	DiffPrefix    = "/diff/"
+	AuthPrefix    = "/auth/"
 )
