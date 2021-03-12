@@ -14,10 +14,17 @@ func run(logger *zap.Logger) error {
 	var err error
 	config := chameleon.NewConfig().Parse()
 	repo := chameleon.Repository{Path: chameleon.Path(config.RepoPath)}
+
+	cache, err := chameleon.NewCache(config.Cache)
+	if err != nil {
+		return fmt.Errorf("cannot create cache: %v", err)
+	}
+
 	server := chameleon.Server{
 		Repository: repo,
 		Database:   &chameleon.Database{},
 		Logger:     logger,
+		Cache:      cache,
 	}
 
 	err = server.Database.Open(config.DBPath)
@@ -38,19 +45,21 @@ func run(logger *zap.Logger) error {
 		}
 	}()
 
-	sch := gocron.NewScheduler(time.UTC)
-	job, err := sch.Every(config.Pull).Do(func() {
-		logger.Debug("pulling the repo")
-		err := repo.Pull()
+	if config.Pull != 0 {
+		sch := gocron.NewScheduler(time.UTC)
+		job, err := sch.Every(config.Pull).Do(func() {
+			logger.Debug("pulling the repo")
+			err := repo.Pull()
+			if err != nil {
+				logger.Error("cannot pull the repo", zap.Error(err))
+			}
+		})
 		if err != nil {
-			logger.Error("cannot pull the repo", zap.Error(err))
+			return fmt.Errorf("cannot schedule the task: %v", err)
 		}
-	})
-	if err != nil {
-		return fmt.Errorf("cannot schedule the task: %v", err)
+		job.SingletonMode()
+		sch.StartAsync()
 	}
-	job.SingletonMode()
-	sch.StartAsync()
 
 	logger.Info("listening", zap.String("addr", config.Address))
 	return server.Serve(config.Address)

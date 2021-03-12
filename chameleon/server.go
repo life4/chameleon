@@ -16,6 +16,7 @@ type Server struct {
 	Repository Repository
 	Database   *Database
 	Logger     *zap.Logger
+	Cache      *Cache
 	router     *httprouter.Router
 }
 
@@ -33,11 +34,11 @@ func (s *Server) Init(debug bool) {
 	)
 	s.router.GET(
 		MainPrefix+"*filepath",
-		HandlerMain{Server: s, Template: TemplateArticle}.Handle,
+		s.Cache.Wrap(HandlerMain{Server: s, Template: TemplateArticle}.Handle),
 	)
 	s.router.GET(
 		LinterPrefix+"*filepath",
-		HandlerMain{Server: s, Template: TemplateLinter}.Handle,
+		s.Cache.Wrap(HandlerMain{Server: s, Template: TemplateLinter}.Handle),
 	)
 	s.router.GET(
 		CommitsPrefix+"*filepath",
