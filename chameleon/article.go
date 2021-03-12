@@ -20,8 +20,9 @@ type Article struct {
 	Path       Path
 
 	// cache
-	raw   []byte
-	title string
+	raw     []byte
+	title   string
+	commits Commits
 }
 
 func (a Article) Valid() (bool, error) {
@@ -101,7 +102,11 @@ func (a Article) Slug() string {
 	return strings.TrimSuffix(a.Path.Name(), Extension)
 }
 
-func (a Article) Commits() (Commits, error) {
+func (a *Article) Commits() (Commits, error) {
+	if a.commits != nil {
+		return a.commits, nil
+	}
+
 	p := a.Path.Relative(a.Repository.Path)
 	cmd := a.Repository.Command("log", "--pretty=%H|%cI|%an|%ae|%s", p.String())
 	out, err := cmd.CombinedOutput()
@@ -109,14 +114,14 @@ func (a Article) Commits() (Commits, error) {
 		return nil, fmt.Errorf("%v: %s", err, out)
 	}
 	lines := strings.Split(strings.TrimSpace(string(out)), "\n")
-	commits := make(Commits, len(lines))
+	a.commits = make(Commits, len(lines))
 	for i, line := range lines {
-		commits[i], err = ParseCommit(line)
+		a.commits[i], err = ParseCommit(line)
 		if err != nil {
 			return nil, err
 		}
 	}
-	return commits, nil
+	return a.commits, nil
 }
 
 func (a Article) URLs() URLs {
