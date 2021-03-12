@@ -41,21 +41,16 @@ func (a *Article) Linter() Linter {
 }
 
 func (a *Article) Raw() ([]byte, error) {
+	var err error
 	if a.raw != nil {
 		return a.raw, nil
 	}
-	raw, err := os.ReadFile(a.Path.String())
+	a.raw, err = os.ReadFile(a.Path.String())
 	if err != nil {
 		return nil, fmt.Errorf("cannot read file: %v", err)
 	}
-	a.raw = raw
 	a.trimTitle()
-	return raw, nil
-}
-
-func (a *Article) Content() (string, error) {
-	raw, err := a.Raw()
-	return string(raw), err
+	return a.raw, nil
 }
 
 func (a *Article) HTML() (string, error) {
