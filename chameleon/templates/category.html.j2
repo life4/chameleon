@@ -75,6 +75,7 @@
         <a class="btn btn-outline-primary btn-sm text-start" href="{{ .Article.URLs.Commits }}">
           <i class="fas fa-code-branch fa-fw"></i>
           commits
+          ({{ .Article.Commits.Len }})
         </a>
         <a class="btn btn-outline-primary btn-sm text-start" href="{{ .Article.URLs.Raw }}">
           <i class="fas fa-code fa-fw"></i>
