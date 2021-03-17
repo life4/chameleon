@@ -46,39 +46,43 @@
 
 {{define "sidebar"}}
   {{if not .Category}}
-    <div class="col-lg-2 col-md-3">
+    <div class="col-md-2 sidebar">
       <div>
-        <i class="far fa-eye" title="views" data-bs-toggle="tooltip" data-bs-placement="right"></i>
+        <i class="far fa-eye fa-fw" title="views" data-bs-toggle="tooltip" data-bs-placement="right"></i>
         {{ .Views.Get }}
       </div>
 
       <div>
-        <i class="far fa-save" title="created" data-bs-toggle="tooltip" data-bs-placement="right"></i>
+        <i class="far fa-save fa-fw" title="created" data-bs-toggle="tooltip" data-bs-placement="right"></i>
         {{ .Article.Commits.Created.Time | date }}
       </div>
 
       <div>
-        <i class="far fa-edit" title="edited" data-bs-toggle="tooltip" data-bs-placement="right"></i>
+        <i class="far fa-edit fa-fw" title="edited" data-bs-toggle="tooltip" data-bs-placement="right"></i>
         {{ .Article.Commits.Edited.Time | date }}
       </div>
 
       <div>
-        <i class="far fa-user" title="author" data-bs-toggle="tooltip" data-bs-placement="right"></i>
+        <i class="far fa-user fa-fw" title="author" data-bs-toggle="tooltip" data-bs-placement="right"></i>
         {{ .Article.Commits.Created.Name }}
       </div>
 
       <div class="d-grid gap-2">
-        <a class="btn btn-outline-primary btn-sm" href="{{ .Article.URLs.Linter }}">
+        <a class="btn btn-outline-primary btn-sm text-start" href="{{ .Article.URLs.Linter }}">
+          <i class="fas fa-bug fa-fw"></i>
           linter
         </a>
-        <a class="btn btn-outline-primary btn-sm" href="{{ .Article.URLs.Commits }}">
+        <a class="btn btn-outline-primary btn-sm text-start" href="{{ .Article.URLs.Commits }}">
+          <i class="fas fa-code-branch fa-fw"></i>
           commits
         </a>
-        <a class="btn btn-outline-primary btn-sm" href="{{ .Article.URLs.Raw }}">
+        <a class="btn btn-outline-primary btn-sm text-start" href="{{ .Article.URLs.Raw }}">
+          <i class="fas fa-code fa-fw"></i>
           raw
         </a>
         {{ if .Article.URLs.Edit }}
-          <a class="btn btn-outline-primary btn-sm" href="{{ .Article.URLs.Edit }}" target="_blank">
+          <a class="btn btn-outline-primary btn-sm text-start" href="{{ .Article.URLs.Edit }}" target="_blank">
+            <i class="far fa-edit fa-fw"></i>
             edit
           </a>
         {{ end }}
