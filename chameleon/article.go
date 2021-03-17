@@ -14,6 +14,7 @@ import (
 const ISO8601 = "2006-01-02T15:04:05-07:00"
 
 var rexImg = regexp.MustCompile("(<img src=\"(.*?)\".*?/>)")
+var rexLang = regexp.MustCompile("<code class=\"language-([a-zA-Z]+)\">")
 
 type Article struct {
 	Repository Repository
@@ -66,6 +67,25 @@ func (a *Article) HTML() (string, error) {
 	// wrap images into link
 	html = rexImg.ReplaceAllString(html, "<a href=\"$2\" target=\"_blank\">$1</a>")
 	return html, nil
+}
+
+func (a *Article) Languages() ([]string, error) {
+	html, err := a.HTML()
+	if err != nil {
+		return nil, err
+	}
+	matches := rexLang.FindAllStringSubmatch(html, -1)
+	result := make([]string, 0)
+	set := make(map[string]struct{}, len(matches))
+	for _, m := range matches {
+		lang := m[1]
+		_, ok := set[lang]
+		if !ok {
+			set[lang] = struct{}{}
+			result = append(result, lang)
+		}
+	}
+	return result, nil
 }
 
 // trimTitle extracts title from raw content

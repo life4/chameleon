@@ -33,6 +33,15 @@
 
 {{define "content"}}
   {{ .Article.HTML }}
+
+  <!-- https://prismjs.com/ -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js"></script>
+
+  <!-- https://cdnjs.com/libraries/prism/ -->
+  {{ range .Article.Languages }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-{{ . }}.min.js"></script>
+  {{ end }}
 {{end}}
 
 {{define "sidebar"}}
