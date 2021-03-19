@@ -8,16 +8,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRootRedirect(t *testing.T) {
-	is := require.New(t)
-	request, _ := http.NewRequest(http.MethodGet, "/", nil)
-	response := httptest.NewRecorder()
-
+func newTestConfig() Config {
 	config := NewConfig()
 	config.Pull = 0
 	config.DBPath = ""
 	config.RepoPath = "../.repo"
-	s, err := NewServer(config, nil)
+	return config
+}
+
+func TestRootRedirect(t *testing.T) {
+	is := require.New(t)
+	request, err := http.NewRequest(http.MethodGet, "/", nil)
+	is.Nil(err)
+	response := httptest.NewRecorder()
+
+	s, err := NewServer(newTestConfig(), nil)
 	is.Nil(err)
 	s.ServeHTTP(response, request)
 

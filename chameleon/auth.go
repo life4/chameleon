@@ -98,5 +98,5 @@ func (a Auth) HandlePOST(w http.ResponseWriter, r *http.Request, ps httprouter.P
 		return
 	}
 	http.SetCookie(w, a.make(r))
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, MainPrefix, http.StatusSeeOther)
 }
