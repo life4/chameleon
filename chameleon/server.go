@@ -2,9 +2,12 @@ package chameleon
 
 import (
 	"embed"
+	"fmt"
 	"net/http"
 	"net/http/pprof"
+	"time"
 
+	"github.com/go-co-op/gocron"
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
 )
@@ -16,12 +19,76 @@ type Server struct {
 	Repository Repository
 	Database   *Database
 	Logger     *zap.Logger
-	Cache      *Cache
-	Auth       Auth
-	router     *httprouter.Router
+	Config     Config
+
+	cache  *Cache
+	auth   Auth
+	router *httprouter.Router
 }
 
-func (s *Server) Init(debug bool) {
+func NewServer(config Config, logger *zap.Logger) (*Server, error) {
+	if logger == nil {
+		logger = zap.NewNop()
+	}
+	repo := Repository{Path: Path(config.RepoPath)}
+
+	cache, err := NewCache(config.Cache)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create cache: %v", err)
+	}
+
+	server := Server{
+		Repository: repo,
+		Database:   &Database{},
+		Logger:     logger,
+		cache:      cache,
+		auth: Auth{
+			Password: config.Password,
+			Logger:   logger,
+		},
+		Config: config,
+	}
+
+	if config.DBPath != "" {
+		err = server.Database.Open(config.DBPath)
+		if err != nil {
+			return nil, fmt.Errorf("cannot open database: %v", err)
+		}
+		defer func() {
+			err := server.Database.Close()
+			if err != nil {
+				logger.Error("cannot close connection", zap.Error(err))
+			}
+		}()
+	}
+
+	err = repo.Clone(config.RepoURL)
+	if err != nil {
+		return nil, fmt.Errorf("cannot clone repo: %v", err)
+	}
+
+	server.Init()
+
+	if config.Pull != 0 {
+		sch := gocron.NewScheduler(time.UTC)
+		job, err := sch.Every(config.Pull).Do(func() {
+			logger.Debug("pulling the repo")
+			err := repo.Pull()
+			if err != nil {
+				logger.Error("cannot pull the repo", zap.Error(err))
+			}
+		})
+		if err != nil {
+			return nil, fmt.Errorf("cannot schedule the task: %v", err)
+		}
+		job.SingletonMode()
+		sch.StartAsync()
+	}
+
+	return &server, nil
+}
+
+func (s *Server) Init() {
 	s.router = httprouter.New()
 	s.router.Handler(
 		http.MethodGet,
@@ -35,29 +102,37 @@ func (s *Server) Init(debug bool) {
 	)
 	s.router.GET(
 		MainPrefix+"*filepath",
-		s.Auth.Wrap(
-			s.Cache.Wrap(
+		s.auth.Wrap(
+			s.cache.Wrap(
 				HandlerMain{Server: s, Template: TemplateArticle}.Handle,
 			),
 		),
 	)
 	s.router.GET(
 		LinterPrefix+"*filepath",
-		s.Cache.Wrap(HandlerMain{Server: s, Template: TemplateLinter}.Handle),
+		s.auth.Wrap(
+			s.cache.Wrap(
+				HandlerMain{Server: s, Template: TemplateLinter}.Handle,
+			),
+		),
 	)
 	s.router.GET(
 		CommitsPrefix+"*filepath",
-		HandlerMain{Server: s, Template: TemplateCommits}.Handle,
+		s.auth.Wrap(
+			HandlerMain{Server: s, Template: TemplateCommits}.Handle,
+		),
 	)
 	s.router.GET(
 		DiffPrefix+":hash",
-		HandlerDiff{Server: s}.Handle,
+		s.auth.Wrap(
+			HandlerDiff{Server: s}.Handle,
+		),
 	)
 
-	s.router.GET(AuthPrefix, s.Auth.HandleGET)
-	s.router.POST(AuthPrefix, s.Auth.HandlePOST)
+	s.router.GET(AuthPrefix, s.auth.HandleGET)
+	s.router.POST(AuthPrefix, s.auth.HandlePOST)
 
-	if debug {
+	if s.Config.PProf {
 		s.Logger.Debug("debugging enabled", zap.String("endpoint", "/debug/pprof/"))
 		s.router.HandlerFunc("GET", "/debug/pprof/", pprof.Index)
 		s.router.HandlerFunc("GET", "/debug/pprof/cmdline", pprof.Cmdline)
@@ -67,10 +142,6 @@ func (s *Server) Init(debug bool) {
 	}
 }
 
-func (s *Server) Close() error {
-	return s.Database.Close()
-}
-
-func (s *Server) Serve(addr string) error {
-	return http.ListenAndServe(addr, s.router)
+func (s Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.router.ServeHTTP(w, r)
 }

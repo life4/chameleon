@@ -58,6 +58,9 @@ func (r Repository) Clone(url string) error {
 	if isdir {
 		return nil
 	}
+	if url == "" {
+		return fmt.Errorf("repo not found and no clone URL specified")
+	}
 
 	c := exec.Command("git", "clone", url, r.Path.String())
 	out, err := c.CombinedOutput()

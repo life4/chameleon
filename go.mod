@@ -12,6 +12,7 @@ require (
 	github.com/recoilme/pudge v1.0.3
 	github.com/recoilme/slowpoke v2.0.1+incompatible
 	github.com/spf13/pflag v1.0.5
+	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/tidwall/gjson v1.3.5
 	github.com/victorspringer/http-cache v0.0.0-20190721184638-fe78e97af707
 	github.com/whilp/git-urls v1.0.0 // indirect

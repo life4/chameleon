@@ -34,10 +34,16 @@ func (db *Database) Open(path string) error {
 }
 
 func (db Database) Close() error {
+	if db.db == nil {
+		return nil
+	}
 	return db.db.Close()
 }
 
 func (db Database) Views(path Path) *Views {
+	if db.db == nil {
+		return nil
+	}
 	return &Views{
 		db:   db.db,
 		path: path,

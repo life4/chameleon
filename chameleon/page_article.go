@@ -22,6 +22,9 @@ func (p PageArticle) Render(w io.Writer) error {
 }
 
 func (p PageArticle) Inc() {
+	if p.Views == nil {
+		return
+	}
 	go func() {
 		err := p.Views.Inc()
 		if err != nil {
