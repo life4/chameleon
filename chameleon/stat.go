@@ -5,20 +5,31 @@ import "sort"
 type Stat struct {
 	Path  string
 	Count uint32
+	Repo  Repository
 }
 
-type ViewStat []Stat
+func (s Stat) URLs() URLs {
+	return URLs{
+		Repository: s.Repo,
+		Path:       Path(s.Path),
+	}
+}
+
+type ViewStat struct {
+	Stats []Stat
+	Max   uint32
+}
 
 func (s ViewStat) Len() int {
-	return len(s)
+	return len(s.Stats)
 }
 
 func (s ViewStat) Less(i, j int) bool {
-	return s[i].Count < s[j].Count
+	return s.Stats[i].Count < s.Stats[j].Count
 }
 
 func (s ViewStat) Swap(i, j int) {
-	s[i], s[j] = s[j], s[i]
+	s.Stats[i], s.Stats[j] = s.Stats[j], s.Stats[i]
 }
 
 func (s *ViewStat) Sort() {
@@ -26,5 +37,15 @@ func (s *ViewStat) Sort() {
 }
 
 func (s *ViewStat) Add(path string, count uint32) {
-	*s = append(*s, Stat{Path: path, Count: count})
+	s.Stats = append(s.Stats, Stat{Path: path, Count: count})
+	if count > s.Max {
+		s.Max = count
+	}
+}
+
+func (stats ViewStat) SetRepo(repo Repository) {
+	for i, stat := range stats.Stats {
+		stat.Repo = repo
+		stats.Stats[i] = stat
+	}
 }

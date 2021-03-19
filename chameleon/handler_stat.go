@@ -20,10 +20,11 @@ func (h HandlerStat) Handle(w http.ResponseWriter, r *http.Request, ps httproute
 }
 
 func (h HandlerStat) Render(w http.ResponseWriter) error {
-	stat, err := h.Server.Database.Views("").All()
+	stat, err := h.Server.Database.Views(h.Server.Repository.Path).All()
 	if err != nil {
 		return err
 	}
 	stat.Sort()
+	stat.SetRepo(h.Server.Repository)
 	return TemplateStat.Execute(w, stat)
 }

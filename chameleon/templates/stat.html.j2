@@ -9,7 +9,21 @@
 {{end}}
 
 {{define "content"}}
-  {{ range . }}
-    {{ .Path }} {{ .Count }}
-  {{ end }}
+  <table class="table table-sm" style="text-align: left">
+    {{ $max := .Max }}
+    {{ range .Stats }}
+      <tr>
+        <td>
+          {{ .URLs.Main }}
+        </td>
+        <td>
+          {{ .Count }}
+        </td>
+        <td>
+          <div style="width: {{ percent .Count $max }}px; height: 1em; background-color: red">
+          </div>
+        </td>
+      </tr>
+    {{ end }}
+  </table>
 {{end}}

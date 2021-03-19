@@ -39,4 +39,7 @@ var funcs = template.FuncMap{
 		hash := md5.Sum([]byte(mail))
 		return fmt.Sprintf("https://www.gravatar.com/avatar/%x", hash)
 	},
+	"percent": func(a, b uint32) uint32 {
+		return a * 100 / b
+	},
 }
