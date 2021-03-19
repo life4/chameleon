@@ -9,4 +9,5 @@ const (
 	CommitsPrefix = "/commits/"
 	DiffPrefix    = "/diff/"
 	AuthPrefix    = "/auth/"
+	StatPrefix    = "/stat/"
 )

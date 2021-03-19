@@ -38,3 +38,15 @@ func (views Views) Get() (uint32, error) {
 	})
 	return count, err
 }
+
+func (views Views) All() (ViewStat, error) {
+	result := make(ViewStat, 0)
+	err := views.db.View(func(tx *bbolt.Tx) error {
+		bucket := tx.Bucket([]byte("views"))
+		return bucket.ForEach(func(k, v []byte) error {
+			result.Add(string(k), binary.BigEndian.Uint32(v))
+			return nil
+		})
+	})
+	return result, err
+}

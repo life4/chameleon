@@ -16,6 +16,13 @@ func run(logger *zap.Logger) error {
 		return err
 	}
 
+	defer func() {
+		err := server.Database.Close()
+		if err != nil {
+			logger.Error("cannot close connection", zap.Error(err))
+		}
+	}()
+
 	logger.Info("listening", zap.String("addr", config.Address))
 	return http.ListenAndServe(config.Address, server)
 }

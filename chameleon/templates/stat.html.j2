@@ -1,0 +1,15 @@
+{{define "title"}}
+  View Statistics
+{{end}}
+
+{{define "header"}}
+  <h1>
+    View Statistics
+  </h1>
+{{end}}
+
+{{define "content"}}
+  {{ range . }}
+    {{ .Path }} {{ .Count }}
+  {{ end }}
+{{end}}

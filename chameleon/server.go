@@ -54,12 +54,6 @@ func NewServer(config Config, logger *zap.Logger) (*Server, error) {
 		if err != nil {
 			return nil, fmt.Errorf("cannot open database: %v", err)
 		}
-		defer func() {
-			err := server.Database.Close()
-			if err != nil {
-				logger.Error("cannot close connection", zap.Error(err))
-			}
-		}()
 	}
 
 	err = repo.Clone(config.RepoURL)
@@ -126,6 +120,12 @@ func (s *Server) Init() {
 		DiffPrefix+":hash",
 		s.auth.Wrap(
 			HandlerDiff{Server: s}.Handle,
+		),
+	)
+	s.router.GET(
+		StatPrefix,
+		s.auth.Wrap(
+			HandlerStat{Server: s}.Handle,
 		),
 	)
 

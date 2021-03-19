@@ -3,12 +3,15 @@ package chameleon
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 	"strings"
 	"text/template"
 
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
 )
+
+var rexNotLetter = regexp.MustCompile(`[^a-zA-Z0-9]`)
 
 type HandlerMain struct {
 	Template *template.Template
@@ -27,21 +30,20 @@ func (h HandlerMain) Handle(w http.ResponseWriter, r *http.Request, ps httproute
 		return
 	}
 
-	// increment views count
-	_, err = r.Cookie("viewed")
-	if err == http.ErrNoCookie {
-		cookie := http.Cookie{
-			Name:   "viewed",
-			Value:  "1",
-			Path:   r.URL.Path,
-			MaxAge: 3600 * 24,
+	// increment views
+	if path != "" {
+		key := "viewed_" + rexNotLetter.ReplaceAllString(path, "_")
+		_, err = r.Cookie(key)
+		if err != nil {
+			cookie := http.Cookie{
+				Name:   key,
+				Value:  "1",
+				Path:   r.URL.Path,
+				MaxAge: 3600 * 24,
+			}
+			http.SetCookie(w, &cookie)
+			page.Inc()
 		}
-		http.SetCookie(w, &cookie)
-		page.Inc()
-	} else if err != nil {
-		h.Server.Logger.Error("cannot get cookie", zap.Error(err), zap.String("path", path))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
 	}
 
 	// render the page
