@@ -40,7 +40,7 @@ func (views Views) Get() (uint32, error) {
 }
 
 func (views Views) All() (ViewStat, error) {
-	result := ViewStat{Stats: make([]Stat, 0)}
+	result := ViewStat{Stats: make([]*Stat, 0)}
 	err := views.db.View(func(tx *bbolt.Tx) error {
 		bucket := tx.Bucket([]byte("views"))
 		return bucket.ForEach(func(k, v []byte) error {

@@ -6,6 +6,9 @@ type Stat struct {
 	Path  string
 	Count uint32
 	Repo  Repository
+
+	article  *Article
+	category *Category
 }
 
 func (s Stat) URLs() URLs {
@@ -15,8 +18,41 @@ func (s Stat) URLs() URLs {
 	}
 }
 
+func (s Stat) Article() *Article {
+	if s.article == nil {
+		s.article = &Article{
+			Repository: s.Repo,
+			Path:       Path(s.Path),
+		}
+		ok, _ := s.article.Valid()
+		if !ok {
+			s.article = s.Category().Article()
+		}
+	}
+	return s.article
+}
+
+func (s Stat) Category() *Category {
+	if s.category == nil {
+		s.category = &Category{
+			Repository: s.Repo,
+			Path:       Path(s.Path),
+		}
+	}
+	return s.category
+}
+
+func (s Stat) Title() string {
+	art := s.Article()
+	title, err := art.Title()
+	if err != nil {
+		return s.Path
+	}
+	return title
+}
+
 type ViewStat struct {
-	Stats []Stat
+	Stats []*Stat
 	Max   uint32
 }
 
@@ -37,7 +73,7 @@ func (s *ViewStat) Sort() {
 }
 
 func (s *ViewStat) Add(path string, count uint32) {
-	s.Stats = append(s.Stats, Stat{Path: path, Count: count})
+	s.Stats = append(s.Stats, &Stat{Path: path, Count: count})
 	if count > s.Max {
 		s.Max = count
 	}

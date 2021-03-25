@@ -1,29 +1,37 @@
 {{define "title"}}
-  View Statistics
+  Statistics
 {{end}}
 
 {{define "header"}}
   <h1>
-    View Statistics
+    Statistics
   </h1>
 {{end}}
 
 {{define "content"}}
-  <table class="table table-sm" style="text-align: left">
+  <h2>Views per page</h2>
+  <div class="container">
     {{ $max := .Max }}
     {{ range .Stats }}
-      <tr>
-        <td>
-          {{ .URLs.Main }}
-        </td>
-        <td>
+      <div class="row">
+        <div class="col-4">
+          {{ if .Category.Valid }}
+            <i class="far fa-folder fa-fw"></i>
+          {{ else }}
+            <i class="far fa-file fa-fw"></i>
+          {{ end }}
+          <a href="{{ .URLs.Main }}">
+            {{ .Article.Title }}
+          </a>
+        </div>
+        <div class="col-1">
           {{ .Count }}
-        </td>
-        <td>
-          <div style="width: {{ percent .Count $max }}px; height: 1em; background-color: red">
+        </div>
+        <div class="col">
+          <div style="width: {{ percent .Count $max }}%; height: 1em" class="bg-dark">
           </div>
-        </td>
-      </tr>
+        </div>
+      </div>
     {{ end }}
   </table>
 {{end}}
