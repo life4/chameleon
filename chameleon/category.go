@@ -1,5 +1,7 @@
 package chameleon
 
+import "fmt"
+
 type Category struct {
 	Repository Repository
 	Path       Path
@@ -27,7 +29,7 @@ func (c Category) Categories() ([]Category, error) {
 	cats := make([]Category, 0)
 	paths, err := c.Path.SubPaths()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("cannot get subpaths: %v", err)
 	}
 	for _, p := range paths {
 		cat := Category{
@@ -36,7 +38,7 @@ func (c Category) Categories() ([]Category, error) {
 		}
 		valid, err := cat.Valid()
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("cannot validate category: %v", err)
 		}
 		if !valid {
 			continue
@@ -50,7 +52,7 @@ func (c Category) Articles() (Articles, error) {
 	arts := make(Articles, 0)
 	paths, err := c.Path.SubPaths()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("cannot get subpaths: %v", err)
 	}
 	for _, p := range paths {
 		art := &Article{
@@ -59,7 +61,7 @@ func (c Category) Articles() (Articles, error) {
 		}
 		valid, err := art.Valid()
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("cannot validate article: %v", err)
 		}
 		if !valid {
 			continue

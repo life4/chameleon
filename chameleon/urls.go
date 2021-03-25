@@ -42,7 +42,7 @@ func (urls URLs) Raw() string {
 func (urls URLs) Edit() (string, error) {
 	remote, err := urls.Repository.Remote()
 	if err != nil {
-		return "", err
+		return "", nil
 	}
 
 	if remote.Hostname() == "github.com" {

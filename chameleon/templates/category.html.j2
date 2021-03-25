@@ -14,15 +14,19 @@
 {{define "toc"}}
   {{if .Category}}
     <div class="container-fluid text-light bg-dark text-center lead">
-      <ul class="text-start" style="display: inline-block">
+      <ul class="text-start list-unstyled" style="display: inline-block">
         {{range .Category.Categories}}
           <li>
+            <i class="far fa-folder fa-fw"></i>
             <a href="{{ .URLs.Main }}" class="link-light">{{ .Article.Title }}</a>
           </li>
         {{end}}
         {{range .Category.Articles}}
           <li>
-            {{ .Commits.Edited.Time | date }}
+            <i class="far fa-file fa-fw"></i>
+            <span class="text-secondary">
+              {{ .Commits.Edited.Time | date }}
+            </span>
             <a href="{{ .URLs.Main }}" class="link-light">{{ .Title }}</a>
           </li>
         {{end}}
