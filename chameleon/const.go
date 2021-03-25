@@ -10,4 +10,5 @@ const (
 	DiffPrefix    = "/diff/"
 	AuthPrefix    = "/auth/"
 	StatPrefix    = "/stat/"
+	SearchPrefix  = "/search/"
 )

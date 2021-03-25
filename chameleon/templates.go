@@ -18,6 +18,7 @@ var (
 	TemplateAuth    = parseTemplate("templates/auth.html.j2")
 	TemplateDiff    = parseTemplate("templates/diff.html.j2")
 	TemplateStat    = parseTemplate("templates/stat.html.j2")
+	TemplateSearch  = parseTemplate("templates/search.html.j2")
 
 	Template403 = parseTemplate("templates/403.html.j2")
 	Template404 = parseTemplate("templates/404.html.j2")

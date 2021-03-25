@@ -128,6 +128,12 @@ func (s *Server) Init() {
 			HandlerStat{Server: s}.Handle,
 		),
 	)
+	s.router.GET(
+		SearchPrefix,
+		s.auth.Wrap(
+			HandlerSearch{Server: s}.Handle,
+		),
+	)
 
 	s.router.GET(AuthPrefix, s.auth.HandleGET)
 	s.router.POST(AuthPrefix, s.auth.HandlePOST)

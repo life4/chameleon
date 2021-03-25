@@ -1,0 +1,21 @@
+{{define "title"}}
+  Search
+{{end}}
+
+{{define "header"}}
+  <h1>
+    Search
+  </h1>
+{{end}}
+
+{{define "content"}}
+  <ul>
+    {{ range . }}
+      <li>
+        <a href="{{ .URLs.Main }}">
+          {{ .Title }}
+        </a>
+      </li>
+    {{ end }}
+  </ul>
+{{end}}

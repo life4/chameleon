@@ -16,6 +16,7 @@ Features:
 + Emoji ([enescakir/emoji](https://github.com/enescakir/emoji))
 + Views count
 + Great performance and server-side caching
++ Optional password protection
 
 ## Usage
 
