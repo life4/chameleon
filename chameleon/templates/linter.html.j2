@@ -5,7 +5,7 @@
 {{define "header"}}
   <h1>
     {{if .Parent}}
-      <a href="../">{{ .Parent.Article.Title }}</a> /
+      {{ .Parent.Article.Title }} /
     {{end}}
     {{ .Article.Title }}
   </h1>
