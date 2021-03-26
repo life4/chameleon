@@ -19,8 +19,7 @@ type HandlerMain struct {
 }
 
 func (h HandlerMain) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	path := ps.ByName("filepath")
-	path = strings.TrimRight(path, "/")
+	path := safeText(ps.ByName("filepath"))
 
 	// get page
 	page, err := h.Page(path)

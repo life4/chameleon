@@ -3,14 +3,11 @@ package chameleon
 import (
 	"fmt"
 	"net/http"
-	"regexp"
 	"strings"
 
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
 )
-
-var rexSafeChars = regexp.MustCompile(`[^a-zA-Z\-\.\_ ]`)
 
 type HandlerSearch struct {
 	Server *Server
@@ -41,7 +38,7 @@ func (h HandlerSearch) Page(r *http.Request) (Page, error) {
 		return PageSearch{}, nil
 	}
 
-	query := rexSafeChars.ReplaceAllString(queries[0], "")
+	query := safeText(queries[0])
 	if query == "" {
 		return PageSearch{}, nil
 	}
