@@ -32,7 +32,23 @@
         {{end}}
       </div>
       <div class="row">
-        {{ block "sidebar" . }}{{ end }}
+        <div class="col-md-2 sidebar">
+          {{ block "sidebar" . }}{{ end }}
+          <div class="d-grid gap-2 py-1">
+            <a class="btn btn-outline-dark btn-sm text-start" href="/">
+              <i class="fas fa-home fa-fw"></i>
+              home
+            </a>
+            <a class="btn btn-outline-dark btn-sm text-start" href="/search/">
+              <i class="fas fa-search fa-fw"></i>
+              search
+            </a>
+            <a class="btn btn-outline-dark btn-sm text-start" href="/stat/">
+              <i class="fas fa-chart-bar fa-fw"></i>
+              stat
+            </a>
+          </div>
+        </div>
         <div class="col">
           {{ block "content" . }}{{ end }}
         </div>

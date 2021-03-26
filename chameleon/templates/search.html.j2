@@ -13,18 +13,9 @@
 {{end}}
 
 {{define "content"}}
-  <div class="container">
-    <div class="row justify-content-center py-1">
-      <form class=" col-4 row row-cols-lg-auto g-1">
-        <div class="col-8">
-          <input name="q" class="form-control" placeholder="query" value="{{.Query}}">
-        </div>
-        <div class="col">
-          <button type="submit" class="btn btn-primary">search</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <form class="text-center g-1">
+    <input name="q" class="form-control" placeholder="search" value="{{.Query}}">
+  </form>
 {{end}}
 
 {{define "toc"}}

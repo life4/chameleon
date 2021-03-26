@@ -87,7 +87,7 @@ func (s *Server) Init() {
 	s.router.Handler(
 		http.MethodGet,
 		"/",
-		http.RedirectHandler("/p/", http.StatusTemporaryRedirect),
+		http.RedirectHandler(MainPrefix, http.StatusTemporaryRedirect),
 	)
 	s.router.Handler(
 		http.MethodGet,
