@@ -16,6 +16,7 @@ import (
 type Auth struct {
 	Password string
 	Logger   *zap.Logger
+	TTL      time.Duration
 }
 
 func (a Auth) generate(date string) string {
@@ -31,6 +32,14 @@ func (a Auth) valid(r *http.Request) (bool, error) {
 	parts := strings.SplitN(cookie.Value, "|", 2)
 	if len(parts) != 2 {
 		return false, errors.New("auth date not found")
+	}
+
+	t, err := time.Parse(time.RFC3339, parts[1])
+	if err != nil {
+		return false, err
+	}
+	if t.Add(a.TTL).Unix() < time.Now().Unix() {
+		return false, nil
 	}
 
 	given := []byte(parts[0])

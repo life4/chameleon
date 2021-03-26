@@ -44,6 +44,7 @@ func NewServer(config Config, logger *zap.Logger) (*Server, error) {
 		cache:      cache,
 		auth: Auth{
 			Password: config.Password,
+			TTL:      config.AuthTTL,
 			Logger:   logger,
 		},
 		Config: config,
