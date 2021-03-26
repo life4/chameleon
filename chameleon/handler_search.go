@@ -17,22 +17,31 @@ type HandlerSearch struct {
 }
 
 func (h HandlerSearch) Handle(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	query := r.URL.Query()["q"]
-	if len(query) == 0 {
-		http.Error(w, "empty query", http.StatusBadRequest)
-		return
-	}
-	err := h.Render(w, query[0])
+	page, err := h.Page(r)
 	if err != nil {
-		h.Server.Logger.Error("cannot handle search query", zap.Error(err))
+		h.Server.Logger.Error("cannot get page", zap.Error(err), zap.String("url", r.URL.RawPath))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
+	w.WriteHeader(page.Status())
+	err = page.Render(w)
+	if err != nil {
+		h.Server.Logger.Error("cannot render page", zap.Error(err), zap.String("url", r.URL.RawPath))
+		_, err = fmt.Fprint(w, err.Error())
+		if err != nil {
+			h.Server.Logger.Warn("cannot write response", zap.Error(err), zap.String("url", r.URL.RawPath))
+		}
+		return
+	}
 }
 
-func (h HandlerSearch) Render(w http.ResponseWriter, query string) error {
-	query = rexSafeChars.ReplaceAllString(query, "")
+func (h HandlerSearch) Page(r *http.Request) (Page, error) {
+	queries, ok := r.URL.Query()["q"]
+	if !ok || len(queries) == 0 {
+		return PageSearch{}, nil
+	}
+
+	query := rexSafeChars.ReplaceAllString(queries[0], "")
 	cmd := h.Server.Repository.Command(
 		"grep",
 		"--full-name",
@@ -45,11 +54,14 @@ func (h HandlerSearch) Render(w http.ResponseWriter, query string) error {
 	)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("%v: %s", err, out)
+		return nil, fmt.Errorf("%v: %s", err, out)
 	}
 
 	paths := strings.Split(strings.TrimSpace(string(out)), "\n")
-	arts := make([]*Article, 0)
+	page := PageSearch{
+		Query:   query,
+		Results: make([]*Article, 0),
+	}
 	for _, path := range paths {
 		if path == "" {
 			continue
@@ -60,12 +72,12 @@ func (h HandlerSearch) Render(w http.ResponseWriter, query string) error {
 		}
 		valid, err := art.Valid()
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if !valid {
 			continue
 		}
-		arts = append(arts, art)
+		page.Results = append(page.Results, art)
 	}
-	return TemplateSearch.Execute(w, &arts)
+	return page, nil
 }

@@ -1,21 +1,47 @@
 {{define "title"}}
-  Search
+  {{ if .Query }}
+    Search: {{ .Query }}
+  {{ else }}
+    Search
+  {{ end }}
 {{end}}
 
 {{define "header"}}
   <h1>
-    Search
+    {{ if .Query }}
+      Search: {{ .Query }}
+    {{ else }}
+      Search
+    {{ end }}
   </h1>
 {{end}}
 
 {{define "content"}}
-  <ul>
-    {{ range . }}
-      <li>
-        <a href="{{ .URLs.Main }}">
-          {{ .Title }}
-        </a>
-      </li>
+  <div class="card container-xs" style="width: 18rem; margin: auto">
+    <form class="card-body row">
+      <div class="col-8">
+        <input name="q" type="text" class="form-control" placeholder="query">
+      </div>
+      <div class="col-4">
+        <button type="submit" class="btn btn-primary">search</button>
+      </div>
+    </form>
+  </div>
+
+  {{ if .Query }}
+    {{ if not .Results }}
+      No results
+    {{ else }}
+      <ul>
+        {{ range .Results }}
+          <li>
+            <a href="{{ .URLs.Main }}">
+              {{ .Title }}
+            </a>
+          </li>
+        {{ end }}
+      </ul>
     {{ end }}
-  </ul>
+  {{ end }}
+
 {{end}}
