@@ -18,6 +18,7 @@ Features:
 + Great performance and server-side caching
 + Optional password protection
 + Search
++ Minification ([minify](https://github.com/tdewolff/minify#examples))
 
 ## Usage
 

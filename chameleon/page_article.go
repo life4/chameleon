@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"text/template"
 
+	"github.com/tdewolff/minify"
+	"github.com/tdewolff/minify/html"
 	"go.uber.org/zap"
 )
 
@@ -18,7 +20,20 @@ type PageArticle struct {
 }
 
 func (p PageArticle) Render(w io.Writer) error {
-	return p.Template.Execute(w, &p)
+	m := minify.New()
+	m.AddFunc("text/html", html.Minify)
+
+	r, interw := io.Pipe()
+	var errt error
+	go func() {
+		errt = p.Template.Execute(interw, &p)
+		interw.Close()
+	}()
+	errm := m.Minify("text/html", w, r)
+	if errt != nil {
+		return errt
+	}
+	return errm
 }
 
 func (p PageArticle) Inc() {
