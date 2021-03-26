@@ -42,6 +42,10 @@ func (h HandlerSearch) Page(r *http.Request) (Page, error) {
 	}
 
 	query := rexSafeChars.ReplaceAllString(queries[0], "")
+	if query == "" {
+		return PageSearch{}, nil
+	}
+
 	cmd := h.Server.Repository.Command(
 		"grep",
 		"--full-name",
@@ -53,6 +57,9 @@ func (h HandlerSearch) Page(r *http.Request) (Page, error) {
 		query,
 	)
 	out, err := cmd.CombinedOutput()
+	if cmd.ProcessState.ExitCode() == 1 {
+		return PageSearch{Query: query}, nil
+	}
 	if err != nil {
 		return nil, fmt.Errorf("%v: %s", err, out)
 	}

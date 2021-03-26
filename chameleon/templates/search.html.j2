@@ -8,40 +8,41 @@
 
 {{define "header"}}
   <h1>
-    {{ if .Query }}
-      Search: {{ .Query }}
-    {{ else }}
-      Search
-    {{ end }}
+    Search
   </h1>
 {{end}}
 
 {{define "content"}}
-  <div class="card container-xs" style="width: 18rem; margin: auto">
-    <form class="card-body row">
-      <div class="col-8">
-        <input name="q" type="text" class="form-control" placeholder="query">
-      </div>
-      <div class="col-4">
-        <button type="submit" class="btn btn-primary">search</button>
-      </div>
-    </form>
+  <div class="container">
+    <div class="row justify-content-center py-1">
+      <form class=" col-4 row row-cols-lg-auto g-1">
+        <div class="col-8">
+          <input name="q" class="form-control" placeholder="query" value="{{.Query}}">
+        </div>
+        <div class="col">
+          <button type="submit" class="btn btn-primary">search</button>
+        </div>
+      </form>
+    </div>
   </div>
-
-  {{ if .Query }}
-    {{ if not .Results }}
-      No results
-    {{ else }}
-      <ul>
-        {{ range .Results }}
-          <li>
-            <a href="{{ .URLs.Main }}">
-              {{ .Title }}
-            </a>
-          </li>
-        {{ end }}
-      </ul>
-    {{ end }}
-  {{ end }}
-
 {{end}}
+
+{{define "toc"}}
+  {{ if .Query }}
+    <div class="container-fluid text-light bg-dark text-center lead">
+      {{ if not .Results }}
+        No results
+      {{ else }}
+        <ul class="text-start list-unstyled" style="display: inline-block">
+          {{ range .Results }}
+            <li>
+              <a href="{{ .URLs.Main }}" class="link-light">
+                {{ .Title }}
+              </a>
+            </li>
+          {{ end }}
+        </ul>
+      {{ end }}
+    </div>
+  {{ end }}
+{{ end }}

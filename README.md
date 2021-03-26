@@ -17,6 +17,7 @@ Features:
 + Views count
 + Great performance and server-side caching
 + Optional password protection
++ Search
 
 ## Usage
 
