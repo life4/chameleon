@@ -28,7 +28,7 @@ func parseTemplate(tname string) *template.Template {
 	return template.Must(template.New("base.html.j2").Funcs(funcs).ParseFS(
 		templates,
 		"templates/base.html.j2",
-		string(tname),
+		tname,
 	))
 }
 

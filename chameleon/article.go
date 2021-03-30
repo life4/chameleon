@@ -62,8 +62,8 @@ func (a *Article) HTML() (string, error) {
 	html := string(blackfriday.Run(raw))
 	html = emoji.Parse(html)
 	// fix relative paths
-	html = strings.Replace(html, "src=\"./", "src=\"../", -1)
-	html = strings.Replace(html, "href=\"./", "href=\"../", -1)
+	html = strings.ReplaceAll(html, "src=\"./", "src=\"../")
+	html = strings.ReplaceAll(html, "href=\"./", "href=\"../")
 	// wrap images into link
 	html = rexImg.ReplaceAllString(html, "<a href=\"$2\" target=\"_blank\">$1</a>")
 	return html, nil

@@ -1,0 +1,27 @@
+linters:
+  disable-all: true
+  # https://golangci-lint.run/usage/linters/
+  enable:
+    - gosimple
+    - deadcode
+    - ineffassign
+    - asciicheck
+    - dogsled
+    - exhaustive
+    - exportloopref
+    - gocritic
+    - gofmt
+    - golint
+    - prealloc
+    - lll
+    - sqlclosecheck
+    - tparallel
+    - unconvert
+
+linters-settings:
+  gocritic:
+    disabled-checks:
+      - exitAfterDefer
+      - ifElseChain
+  lll:
+    line-length: 100

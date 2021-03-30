@@ -24,6 +24,6 @@ func (page PageAsset) Render(w io.Writer) error {
 
 func (page PageAsset) Inc() {}
 
-func (p PageAsset) Status() int {
+func (page PageAsset) Status() int {
 	return http.StatusOK
 }

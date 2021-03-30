@@ -79,9 +79,9 @@ func (s *ViewStat) Add(path string, count uint32) {
 	}
 }
 
-func (stats ViewStat) SetRepo(repo Repository) {
-	for i, stat := range stats.Stats {
+func (s ViewStat) SetRepo(repo Repository) {
+	for i, stat := range s.Stats {
 		stat.Repo = repo
-		stats.Stats[i] = stat
+		s.Stats[i] = stat
 	}
 }
