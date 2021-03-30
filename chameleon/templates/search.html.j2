@@ -1,0 +1,39 @@
+{{define "title"}}
+  {{ if .Query }}
+    Search: {{ .Query }}
+  {{ else }}
+    Search
+  {{ end }}
+{{end}}
+
+{{define "header"}}
+  <h1>
+    Search
+  </h1>
+{{end}}
+
+{{define "content"}}
+  <form class="text-center g-1">
+    <input name="q" class="form-control" placeholder="search" value="{{.Query}}">
+  </form>
+{{end}}
+
+{{define "toc"}}
+  {{ if .Query }}
+    <div class="container-fluid text-light bg-dark text-center lead">
+      {{ if not .Results }}
+        No results
+      {{ else }}
+        <ul class="text-start list-unstyled" style="display: inline-block">
+          {{ range .Results }}
+            <li>
+              <a href="{{ .URLs.Main }}" class="link-light">
+                {{ .Title }}
+              </a>
+            </li>
+          {{ end }}
+        </ul>
+      {{ end }}
+    </div>
+  {{ end }}
+{{ end }}

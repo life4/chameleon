@@ -1,0 +1,95 @@
+{{define "title"}}
+  {{ .Article.Title }}
+{{end}}
+
+{{define "header"}}
+  <h1>
+    {{if .Parent}}
+      <a href="{{ .Parent.URLs.Main }}">{{ .Parent.Article.Title }}</a> /
+    {{end}}
+    {{ .Article.Title }}
+  </h1>
+{{end}}
+
+{{define "toc"}}
+  {{if .Category}}
+    <div class="container-fluid text-light bg-dark text-center lead">
+      <ul class="text-start list-unstyled" style="display: inline-block">
+        {{range .Category.Categories}}
+          <li>
+            <i class="far fa-folder fa-fw"></i>
+            <a href="{{ .URLs.Main }}" class="link-light">{{ .Article.Title }}</a>
+          </li>
+        {{end}}
+        {{range .Category.Articles}}
+          <li>
+            <i class="far fa-file fa-fw"></i>
+            <span class="text-secondary">
+              {{ .Commits.Created.Time | date }}
+            </span>
+            <a href="{{ .URLs.Main }}" class="link-light">{{ .Title }}</a>
+          </li>
+        {{end}}
+      </ul>
+    </div>
+  {{end}}
+{{end}}
+
+{{define "content"}}
+  {{ .Article.HTML }}
+
+  <!-- https://prismjs.com/ -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js"></script>
+
+  <!-- https://cdnjs.com/libraries/prism/ -->
+  {{ range .Article.Languages }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-{{ . }}.min.js"></script>
+  {{ end }}
+{{end}}
+
+{{define "sidebar"}}
+  {{if not .Category}}
+    <div>
+      <i class="far fa-eye fa-fw" title="views" data-bs-toggle="tooltip" data-bs-placement="right"></i>
+      {{ .Views.Get }}
+    </div>
+
+    <div>
+      <i class="far fa-save fa-fw" title="created" data-bs-toggle="tooltip" data-bs-placement="right"></i>
+      {{ .Article.Commits.Created.Time | date }}
+    </div>
+
+    <div>
+      <i class="far fa-edit fa-fw" title="edited" data-bs-toggle="tooltip" data-bs-placement="right"></i>
+      {{ .Article.Commits.Edited.Time | date }}
+    </div>
+
+    <div>
+      <i class="far fa-user fa-fw" title="author" data-bs-toggle="tooltip" data-bs-placement="right"></i>
+      {{ .Article.Commits.Created.Name }}
+    </div>
+
+    <div class="d-grid gap-2">
+      <a class="btn btn-outline-dark btn-sm text-start" href="{{ .Article.URLs.Linter }}">
+        <i class="fas fa-bug fa-fw"></i>
+        linter
+      </a>
+      <a class="btn btn-outline-dark btn-sm text-start" href="{{ .Article.URLs.Commits }}">
+        <i class="fas fa-code-branch fa-fw"></i>
+        commits
+        ({{ .Article.Commits.Len }})
+      </a>
+      <a class="btn btn-outline-dark btn-sm text-start" href="{{ .Article.URLs.Raw }}">
+        <i class="fas fa-code fa-fw"></i>
+        raw
+      </a>
+      {{ if .Article.URLs.Edit }}
+        <a class="btn btn-outline-dark btn-sm text-start" href="{{ .Article.URLs.Edit }}" target="_blank">
+          <i class="far fa-edit fa-fw"></i>
+          edit
+        </a>
+      {{ end }}
+    </div>
+  {{end}}
+{{end}}

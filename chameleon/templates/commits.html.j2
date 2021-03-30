@@ -1,0 +1,28 @@
+{{define "title"}}
+  {{ .Article.Title }}
+{{end}}
+
+{{define "header"}}
+  <h1>
+    {{if .Parent}}
+      <a href="../">{{ .Parent.Article.Title }}</a> /
+    {{end}}
+    {{ .Article.Title }}
+  </h1>
+{{end}}
+
+{{define "content"}}
+  <ul>
+    {{ range .Article.Commits }}
+      <li>
+        <a href="/diff/{{ .Hash }}">
+          {{ .Time | date }}
+        </a>
+        by
+        <img src="{{ .Mail | gravatar }}" class="avatar" />
+        <a href="mailto:{{.Mail}}">{{ .Name }}</a>:
+        {{ .Msg }}
+      </li>
+    {{end}}
+  <ul>
+{{end}}

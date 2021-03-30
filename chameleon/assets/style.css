@@ -19,37 +19,23 @@
 	text-align: center;
 }
 
-.statblock {
-	display: inline-block;
-	margin: 2px 10px;
-}
-
 .avatar {
-	opacity: .9;
-}
-
-.avatar:hover {
-	text-decoration: none;
-	opacity: 1;
-}
-
-.avatar img {
-	border-radius: 25px;
-	width: 50px;
-	height: 50px;
+	border-radius: .5em;
+	width: 1em;
+	height: 1em;
 	box-shadow: 0 0 1px;
 }
 
 .level-error {
-	color: red;
+	color: #EA2027;
 }
 
 .level-warning {
-	color: yellow;
+	color: #EE5A24;
 }
 
 .level-suggestion {
-	color: green;
+	color: #009432;
 }
 
 .content img {

@@ -1,0 +1,21 @@
+{{define "title"}}
+  {{ .Msg }}
+{{end}}
+{{define "header"}}
+  <h1>
+    {{ .Msg }}
+  </h1>
+{{end}}
+
+{{define "content"}}
+  <pre>
+    <code class="language-diff" style="white-space: pre-wrap">
+      {{ .Diff }}
+    </code>
+  </pre>
+
+  <!-- https://prismjs.com/ -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-diff.min.js"></script>
+{{end}}

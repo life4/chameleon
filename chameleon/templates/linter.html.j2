@@ -1,0 +1,40 @@
+{{define "title"}}
+  {{ .Article.Title }}
+{{end}}
+
+{{define "header"}}
+  <h1>
+    {{if .Parent}}
+      {{ .Parent.Article.Title }} /
+    {{end}}
+    {{ .Article.Title }}
+  </h1>
+{{end}}
+
+{{define "sidebar"}}
+  <div class="d-grid gap-2">
+    <a class="btn btn-outline-dark btn-sm text-start" href="{{ .Article.URLs.Main }}">
+      <i class="fas fa-file fa-fw"></i>
+      article
+    </a>
+  </div>
+{{end}}
+
+{{define "content"}}
+  <table class="table table-sm" style="text-align: left">
+    <tr>
+      <th>line</th>
+      <th>level</th>
+      <th>message</th>
+      <th>check</th>
+    </tr>
+    {{ range .Article.Linter.Alerts }}
+      <tr>
+        <td>{{ .Line }}:{{ .Span }}</td>
+        <td class="level-{{ .Severity }}">{{ .Severity }}</td>
+        <td>{{ .Message }}</td>
+        <td>{{ .Check }}</td>
+      </tr>
+    {{end}}
+  </table>
+{{end}}

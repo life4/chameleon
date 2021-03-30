@@ -1,0 +1,27 @@
+{{define "title"}}
+  403: Password Required
+{{end}}
+
+{{define "header"}}
+  <h1>
+    403: Password Required
+  </h1>
+{{end}}
+
+{{define "content"}}
+  <div class="card container-xs" style="width: 18rem; margin: auto">
+    <form method="post" action="/auth/" class="card-body row">
+      {{ if not . }}
+        <div class="alert alert-danger" role="alert">
+          Invalid password
+        </div>
+      {{ end }}
+      <div class="col-8">
+        <input name="password" type="password" class="form-control" placeholder="password">
+      </div>
+      <div class="col-4">
+        <button type="submit" class="btn btn-primary">enter</button>
+      </div>
+    </form>
+  </div>
+{{end}}

@@ -1,27 +1,37 @@
 # Chameleon
 
-Chameleon is web application that reflects content from markdown files from Github. Powers [articles.orsinium.dev](https://articles.orsinium.dev/).
+Chameleon is web application (blog engine) that reflects content from markdown files from a git repository. Powers [articles.orsinium.dev](https://articles.orsinium.dev/).
 
-## Run from release
+Features:
 
-1. [Download release](https://github.com/orsinium/chameleon/releases).
-2. Extract: `tar -xzf chameleon.tar.gz`
-3. Edit config: `nano config.toml`
-4. Run binary release for your platform: `./linux-amd64.bin`
++ Markdown
++ Minimalistic UI
++ Easy to use, no CI or a special repo structure required
++ Zero configuration
++ Single binary
++ Automatically pull the repo by schedule
++ Built-in prose linter ([Vale](https://github.com/errata-ai/vale))
++ Syntax highlighting ([Prism](https://prismjs.com/))
++ Formulas ([MathJax](https://www.mathjax.org/))
++ Emoji ([enescakir/emoji](https://github.com/enescakir/emoji))
++ Views count
++ Great performance and server-side caching
++ Optional password protection
++ Search
++ Minification ([minify](https://github.com/tdewolff/minify#examples))
 
-## Run from source
+## Usage
+
+Build:
 
 ```bash
-git clone https://github.com/orsinium/chameleon
+git clone https://github.com/life4/chameleon.git
 cd chameleon
-cp config{_example,}.toml
-go get .
-go run *.go
+go build -o chameleon.bin .
 ```
 
-## Run from build
+Run:
 
 ```bash
-go build .
-./chameleon
+./chameleon.bin --path ./path/to/repo/
 ```

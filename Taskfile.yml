@@ -1,0 +1,10 @@
+# https://taskfile.dev/
+version: "3"
+
+tasks:
+  go:run:
+    sources:
+      - chameleon/
+      - main.go
+    cmds:
+      - go run .
