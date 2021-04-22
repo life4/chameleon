@@ -117,7 +117,7 @@ func (a *Article) trimTitle() {
 		return
 	}
 	a.raw = bytes.TrimPrefix(a.raw, title)
-	a.title = strings.TrimSuffix(string(title[2:]), "\n")
+	a.title = strings.ReplaceAll(strings.TrimSuffix(string(title[2:]), "\n"), "`", "")
 }
 
 func (a *Article) Title() (string, error) {
