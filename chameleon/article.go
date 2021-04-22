@@ -8,7 +8,9 @@ import (
 	"strings"
 
 	"github.com/enescakir/emoji"
-	"gopkg.in/russross/blackfriday.v2"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/renderer/html"
 )
 
 const ISO8601 = "2006-01-02T15:04:05-07:00"
@@ -59,7 +61,22 @@ func (a *Article) HTML() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	html := string(blackfriday.Run(raw))
+	mdparser := goldmark.New(
+		goldmark.WithExtensions(
+			extension.GFM,
+			extension.Footnote,
+			extension.Typographer,
+		),
+		goldmark.WithRendererOptions(
+			html.WithUnsafe(),
+		),
+	)
+	var buf bytes.Buffer
+	err = mdparser.Convert(raw, &buf)
+	if err != nil {
+		return "", err
+	}
+	html := buf.String()
 	html = emoji.Parse(html)
 	// fix relative paths
 	html = strings.ReplaceAll(html, "src=\"./", "src=\"../")

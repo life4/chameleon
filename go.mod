@@ -17,7 +17,6 @@ require (
 	github.com/remeh/sizedwaitgroup v1.0.0 // indirect
 	github.com/russross/blackfriday v1.6.0 // indirect
 	github.com/shogo82148/go-shuffle v1.0.0 // indirect
-	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.0
@@ -27,12 +26,12 @@ require (
 	github.com/victorspringer/http-cache v0.0.0-20190721184638-fe78e97af707
 	github.com/whilp/git-urls v1.0.0
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
+	github.com/yuin/goldmark v1.3.5
 	go.etcd.io/bbolt v1.3.5
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20210421230115-4e50805a0758 // indirect
 	golang.org/x/sys v0.0.0-20210421221651-33663a62ff08 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
-	gopkg.in/russross/blackfriday.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
