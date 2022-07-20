@@ -37,7 +37,8 @@ func (urls URLs) Commits() string {
 }
 
 func (urls URLs) Raw() string {
-	return MainPrefix + strings.TrimSuffix(urls.suffix(), "/") + ExtensionMarkdown
+	s := urls.Path.Relative(urls.Repository.Path).String()
+	return MainPrefix + s
 }
 
 func (urls URLs) Edit() (string, error) {
