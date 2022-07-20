@@ -111,7 +111,7 @@ func (h HandlerMain) Page(urlPath string) (Page, error) {
 	}
 
 	// article page
-	p = h.Server.Repository.Path.Join(urlPath + Extension)
+	p = h.Server.Repository.Path.Join(urlPath + ExtensionMarkdown)
 	isfile, err = p.IsFile()
 	if err != nil {
 		return nil, err

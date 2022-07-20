@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+const ISO8601 = "2006-01-02T15:04:05-07:00"
+
 type Commits []Commit
 
 func (c Commits) Len() int {
