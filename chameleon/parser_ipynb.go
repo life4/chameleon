@@ -71,7 +71,7 @@ func (JupyterParser) HTML(raw []byte) (string, error) {
 
 		if cell.Type == "code" {
 			src := strings.Join(cell.Source, "")
-			line := fmt.Sprintf("<pre><code class=language-python>%s</code></pre>", src)
+			line := fmt.Sprintf(`<pre><code class="language-python">%s</code></pre>`, src)
 			result = append(result, line)
 
 			hasOut := false
