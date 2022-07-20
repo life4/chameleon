@@ -29,7 +29,7 @@ func (c Category) Categories() ([]Category, error) {
 	cats := make([]Category, 0)
 	paths, err := c.Path.SubPaths()
 	if err != nil {
-		return nil, fmt.Errorf("cannot get subpaths: %v", err)
+		return nil, fmt.Errorf("get subpaths for %s: %v", c.Path.Name(), err)
 	}
 	for _, p := range paths {
 		cat := Category{
@@ -38,7 +38,7 @@ func (c Category) Categories() ([]Category, error) {
 		}
 		valid, err := cat.Valid()
 		if err != nil {
-			return nil, fmt.Errorf("cannot validate category: %v", err)
+			return nil, fmt.Errorf("validate category %s: %v", p.Name(), err)
 		}
 		if !valid {
 			continue
@@ -52,7 +52,7 @@ func (c Category) Articles() (Articles, error) {
 	arts := make(Articles, 0)
 	paths, err := c.Path.SubPaths()
 	if err != nil {
-		return nil, fmt.Errorf("cannot get subpaths: %v", err)
+		return nil, fmt.Errorf("get subpaths for %s: %v", c.Path.Name(), err)
 	}
 	for _, p := range paths {
 		art := &Article{
@@ -61,7 +61,7 @@ func (c Category) Articles() (Articles, error) {
 		}
 		valid, err := art.Valid()
 		if err != nil {
-			return nil, fmt.Errorf("cannot validate article: %v", err)
+			return nil, fmt.Errorf("validate article %s: %v", p.Name(), err)
 		}
 		if !valid {
 			continue

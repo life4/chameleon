@@ -8,7 +8,10 @@ import (
 	"strings"
 )
 
-var rexLang = regexp.MustCompile("<code class=\"language-([a-zA-Z]+)\">")
+var (
+	rexLang = regexp.MustCompile("<code class=\"language-([a-zA-Z]+)\">")
+	rexExt  = regexp.MustCompile(`\.(md|ipynb)`)
+)
 
 type Article struct {
 	Repository Repository
@@ -21,7 +24,7 @@ type Article struct {
 }
 
 func (a Article) Valid() (bool, error) {
-	if !strings.HasSuffix(a.Path.String(), ExtensionMarkdown) {
+	if !rexExt.MatchString(a.Path.String()) {
 		return false, nil
 	}
 	return a.Path.IsFile()
@@ -49,7 +52,7 @@ func (a *Article) Raw() ([]byte, error) {
 	// use parser to extract the title from the raw content
 	parser := GetParser(a.Path)
 	if parser == nil {
-		return nil, errors.New("no parser available for the article")
+		return nil, errors.New("no parser available")
 	}
 	a.title, a.raw = parser.ExtractTitle(raw)
 	if a.title == "" {
@@ -66,11 +69,11 @@ func (a *Article) Raw() ([]byte, error) {
 func (a *Article) HTML() (string, error) {
 	raw, err := a.Raw()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("get raw content: %v", err)
 	}
 	parser := GetParser(a.Path)
 	if parser == nil {
-		return "", errors.New("no parser available for the article")
+		return "", errors.New("no parser available")
 	}
 	return parser.HTML(raw)
 }
@@ -105,7 +108,10 @@ func (a *Article) Title() (string, error) {
 }
 
 func (a Article) Slug() string {
-	return strings.TrimSuffix(a.Path.Name(), ExtensionMarkdown)
+	s := a.Path.Name()
+	s = strings.TrimSuffix(s, ExtensionMarkdown)
+	s = strings.TrimSuffix(s, ExtensionJupyter)
+	return s
 }
 
 func (a *Article) Commits() (Commits, error) {
@@ -117,14 +123,14 @@ func (a *Article) Commits() (Commits, error) {
 	cmd := a.Repository.Command("log", "--pretty=%H|%cI|%an|%ae|%s", "--follow", p.String())
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return nil, fmt.Errorf("%v: %s", err, out)
+		return nil, fmt.Errorf("git log %v: %s", err, out)
 	}
 	lines := strings.Split(strings.TrimSpace(string(out)), "\n")
 	a.commits = make(Commits, len(lines))
 	for i, line := range lines {
 		a.commits[i], err = ParseCommit(line)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("parse commit: %v", err)
 		}
 	}
 	return a.commits, nil

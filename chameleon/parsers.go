@@ -19,7 +19,13 @@ type Parser interface {
 }
 
 func GetParser(path Path) Parser {
-	return MarkdownParser{}
+	if strings.HasSuffix(path.String(), ExtensionMarkdown) {
+		return MarkdownParser{}
+	}
+	if strings.HasSuffix(path.String(), ExtensionJupyter) {
+		return JupyterParser{}
+	}
+	return nil
 }
 
 type MarkdownParser struct{}
@@ -59,4 +65,15 @@ func (MarkdownParser) ExtractTitle(raw []byte) (string, []byte) {
 	raw = bytes.TrimPrefix(raw, title)
 	titleS := strings.ReplaceAll(strings.TrimSuffix(string(title[2:]), "\n"), "`", "")
 	return titleS, raw
+}
+
+type JupyterParser struct{}
+
+func (JupyterParser) HTML(raw []byte) (string, error) {
+	return "unparsed", nil
+}
+
+// ExtractTitle extracts title from raw content
+func (JupyterParser) ExtractTitle(raw []byte) (string, []byte) {
+	return "", raw
 }
