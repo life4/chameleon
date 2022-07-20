@@ -17,6 +17,7 @@ type URLs struct {
 func (urls URLs) suffix() string {
 	s := urls.Path.Relative(urls.Repository.Path).String()
 	s = strings.TrimSuffix(s, ExtensionMarkdown)
+	s = strings.TrimSuffix(s, ExtensionJupyter)
 	if s == "" {
 		return s
 	}
