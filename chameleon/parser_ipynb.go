@@ -34,7 +34,6 @@ func (JupyterParser) HTML(raw []byte) (string, error) {
 	mdparser := goldmark.New(
 		goldmark.WithExtensions(
 			extension.GFM,
-			extension.Footnote,
 			extension.Typographer,
 		),
 		goldmark.WithRendererOptions(
@@ -46,6 +45,7 @@ func (JupyterParser) HTML(raw []byte) (string, error) {
 	// convert each cell into HTML
 	result := make([]string, 0)
 	for _, cell := range nb.Cells {
+
 		if cell.Type == "markdown" {
 			src := strings.Join(cell.Source, "\n")
 			err := mdparser.Convert([]byte(src), &buf)
@@ -55,7 +55,16 @@ func (JupyterParser) HTML(raw []byte) (string, error) {
 			html := buf.String()
 			buf.Reset()
 			result = append(result, html)
+			continue
 		}
+
+		if cell.Type == "code" {
+			src := strings.Join(cell.Source, "")
+			html := fmt.Sprintf("<pre><code class=language-python>%s</code></pre>", src)
+			result = append(result, html)
+			continue
+		}
+
 	}
 	return strings.Join(result, "\n"), nil
 }
