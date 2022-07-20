@@ -16,8 +16,17 @@ type Notebook struct {
 }
 
 type Cell struct {
-	Type   string   `json:"cell_type"`
-	Source []string `json:"source"`
+	Type    string   `json:"cell_type"`
+	Source  []string `json:"source"`
+	Outputs []Output `json:"outputs"`
+}
+
+type Output struct {
+	Data Data
+}
+
+type Data struct {
+	HTML []string `json:"text/html"`
 }
 
 type JupyterParser struct{}
@@ -62,6 +71,18 @@ func (JupyterParser) HTML(raw []byte) (string, error) {
 			src := strings.Join(cell.Source, "")
 			html := fmt.Sprintf("<pre><code class=language-python>%s</code></pre>", src)
 			result = append(result, html)
+
+			hasOut := len(cell.Outputs) != 0
+			if hasOut {
+				result = append(result, `<div class="card text-dark bg-light">`)
+				result = append(result, `<div class="card-body">`)
+			}
+			for _, output := range cell.Outputs {
+				result = append(result, output.Data.HTML...)
+			}
+			if hasOut {
+				result = append(result, `</div></div>`)
+			}
 			continue
 		}
 

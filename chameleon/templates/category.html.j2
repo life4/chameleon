@@ -91,5 +91,15 @@
         </a>
       {{ end }}
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function(){
+        var elements = document.getElementsByClassName("dataframe");
+        Array.prototype.forEach.call(
+          elements,
+          e => e.classList.add("table", "table-sm", "table-bordered")
+        );
+      });
+    </script>
   {{end}}
 {{end}}
