@@ -5,6 +5,7 @@ Chameleon is web application (blog engine) that reflects content from markdown f
 Features:
 
 + Markdown (full support for [CommonMark](https://commonmark.org/) and [GitHub Flavored Markdown](https://github.github.com/gfm/))
++ [Jupyter notebooks](https://jupyter.org/)
 + Minimalistic UI
 + Easy to use, no CI or a special repo structure required
 + Zero configuration
