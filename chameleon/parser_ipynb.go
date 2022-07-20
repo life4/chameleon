@@ -26,7 +26,8 @@ type Output struct {
 }
 
 type Data struct {
-	HTML []string `json:"text/html"`
+	HTML  []string `json:"text/html"`
+	Plain []string `json:"text/plain"`
 }
 
 type JupyterParser struct{}
@@ -78,7 +79,9 @@ func (JupyterParser) HTML(raw []byte) (string, error) {
 				result = append(result, `<div class="card-body">`)
 			}
 			for _, output := range cell.Outputs {
-				result = append(result, output.Data.HTML...)
+				src := strings.Join(output.Data.Plain, "")
+				html := fmt.Sprintf("<pre>%s</pre>", src)
+				result = append(result, html)
 			}
 			if hasOut {
 				result = append(result, `</div></div>`)
