@@ -1,22 +1,17 @@
 package chameleon
 
 import (
-	"bytes"
+	"errors"
 	"fmt"
 	"os"
 	"regexp"
 	"strings"
-
-	"github.com/enescakir/emoji"
-	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/extension"
-	"github.com/yuin/goldmark/renderer/html"
 )
 
-const ISO8601 = "2006-01-02T15:04:05-07:00"
-
-var rexImg = regexp.MustCompile("(<img src=\"(.*?)\".*?/>)")
-var rexLang = regexp.MustCompile("<code class=\"language-([a-zA-Z]+)\">")
+var (
+	rexLang = regexp.MustCompile("<code class=\"language-([a-zA-Z]+)\">")
+	rexExt  = regexp.MustCompile(`\.(md|ipynb)`)
+)
 
 type Article struct {
 	Repository Repository
@@ -29,7 +24,7 @@ type Article struct {
 }
 
 func (a Article) Valid() (bool, error) {
-	if !strings.HasSuffix(a.Path.String(), Extension) {
+	if !rexExt.MatchString(a.Path.String()) {
 		return false, nil
 	}
 	return a.Path.IsFile()
@@ -48,42 +43,39 @@ func (a *Article) Raw() ([]byte, error) {
 	if a.raw != nil {
 		return a.raw, nil
 	}
-	a.raw, err = os.ReadFile(a.Path.String())
+	var raw []byte
+	raw, err = os.ReadFile(a.Path.String())
 	if err != nil {
 		return nil, fmt.Errorf("cannot read file: %v", err)
 	}
-	a.trimTitle()
+
+	// use parser to extract the title from the raw content
+	parser := GetParser(a.Path)
+	if parser == nil {
+		return nil, errors.New("no parser available")
+	}
+	a.title, a.raw = parser.ExtractTitle(raw)
+	if a.title == "" {
+		if a.IsReadme() {
+			a.title = a.Path.Parent().Name()
+		} else {
+			a.title = a.Path.Name()
+		}
+	}
+
 	return a.raw, nil
 }
 
 func (a *Article) HTML() (string, error) {
 	raw, err := a.Raw()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("get raw content: %v", err)
 	}
-	mdparser := goldmark.New(
-		goldmark.WithExtensions(
-			extension.GFM,
-			extension.Footnote,
-			extension.Typographer,
-		),
-		goldmark.WithRendererOptions(
-			html.WithUnsafe(),
-		),
-	)
-	var buf bytes.Buffer
-	err = mdparser.Convert(raw, &buf)
-	if err != nil {
-		return "", err
+	parser := GetParser(a.Path)
+	if parser == nil {
+		return "", errors.New("no parser available")
 	}
-	html := buf.String()
-	html = emoji.Parse(html)
-	// fix relative paths
-	html = strings.ReplaceAll(html, "src=\"./", "src=\"../")
-	html = strings.ReplaceAll(html, "href=\"./", "href=\"../")
-	// wrap images into link
-	html = rexImg.ReplaceAllString(html, "<a href=\"$2\" target=\"_blank\">$1</a>")
-	return html, nil
+	return parser.HTML(raw)
 }
 
 func (a *Article) Languages() ([]string, error) {
@@ -105,21 +97,6 @@ func (a *Article) Languages() ([]string, error) {
 	return result, nil
 }
 
-// trimTitle extracts title from raw content
-func (a *Article) trimTitle() {
-	title := bytes.SplitN(a.raw, []byte{'\n'}, 2)[0]
-	if bytes.Index(title, []byte{'#', ' '}) != 0 {
-		if a.IsReadme() {
-			a.title = a.Path.Parent().Name()
-			return
-		}
-		a.title = a.Path.Name()
-		return
-	}
-	a.raw = bytes.TrimPrefix(a.raw, title)
-	a.title = strings.ReplaceAll(strings.TrimSuffix(string(title[2:]), "\n"), "`", "")
-}
-
 func (a *Article) Title() (string, error) {
 	if a.title == "" {
 		_, err := a.Raw()
@@ -131,7 +108,10 @@ func (a *Article) Title() (string, error) {
 }
 
 func (a Article) Slug() string {
-	return strings.TrimSuffix(a.Path.Name(), Extension)
+	s := a.Path.Name()
+	s = strings.TrimSuffix(s, ExtensionMarkdown)
+	s = strings.TrimSuffix(s, ExtensionJupyter)
+	return s
 }
 
 func (a *Article) Commits() (Commits, error) {
@@ -143,14 +123,14 @@ func (a *Article) Commits() (Commits, error) {
 	cmd := a.Repository.Command("log", "--pretty=%H|%cI|%an|%ae|%s", "--follow", p.String())
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return nil, fmt.Errorf("%v: %s", err, out)
+		return nil, fmt.Errorf("git log %v: %s", err, out)
 	}
 	lines := strings.Split(strings.TrimSpace(string(out)), "\n")
 	a.commits = make(Commits, len(lines))
 	for i, line := range lines {
 		a.commits[i], err = ParseCommit(line)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("parse commit: %v", err)
 		}
 	}
 	return a.commits, nil

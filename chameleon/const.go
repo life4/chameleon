@@ -1,8 +1,9 @@
 package chameleon
 
 const (
-	Extension = ".md"
-	ReadMe    = "README.md"
+	ExtensionMarkdown = ".md"
+	ExtensionJupyter  = ".ipynb"
+	ReadMe            = "README.md"
 
 	MainPrefix    = "/p/"
 	LinterPrefix  = "/linter/"

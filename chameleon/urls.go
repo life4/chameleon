@@ -16,7 +16,8 @@ type URLs struct {
 
 func (urls URLs) suffix() string {
 	s := urls.Path.Relative(urls.Repository.Path).String()
-	s = strings.TrimSuffix(s, Extension)
+	s = strings.TrimSuffix(s, ExtensionMarkdown)
+	s = strings.TrimSuffix(s, ExtensionJupyter)
 	if s == "" {
 		return s
 	}
@@ -36,7 +37,8 @@ func (urls URLs) Commits() string {
 }
 
 func (urls URLs) Raw() string {
-	return MainPrefix + strings.TrimSuffix(urls.suffix(), "/") + Extension
+	s := urls.Path.Relative(urls.Repository.Path).String()
+	return MainPrefix + s
 }
 
 func (urls URLs) Edit() (string, error) {

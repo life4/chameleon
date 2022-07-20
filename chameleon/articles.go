@@ -1,6 +1,8 @@
 package chameleon
 
-import "sort"
+import (
+	"sort"
+)
 
 type Articles []*Article
 
@@ -9,8 +11,16 @@ func (a Articles) Len() int {
 }
 
 func (a Articles) Less(i, j int) bool {
-	c1, _ := a[i].Commits()
-	c2, _ := a[j].Commits()
+	left := a[i]
+	right := a[j]
+	c1, _ := left.Commits()
+	if c1 == nil {
+		return left.Path.Name() < right.Path.Name()
+	}
+	c2, _ := right.Commits()
+	if c1 == nil {
+		return left.Path.Name() < right.Path.Name()
+	}
 	return c1.Created().Time.Unix() < c2.Created().Time.Unix()
 }
 
@@ -19,5 +29,8 @@ func (a Articles) Swap(i, j int) {
 }
 
 func (a *Articles) Sort() {
+	if a.Len() <= 1 {
+		return
+	}
 	sort.Sort(sort.Reverse(a))
 }
