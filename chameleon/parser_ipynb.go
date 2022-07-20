@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"html"
 	"strings"
 
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
-	"github.com/yuin/goldmark/renderer/html"
+	htmlRenderer "github.com/yuin/goldmark/renderer/html"
 )
 
 type Notebook struct {
@@ -28,6 +29,7 @@ type Output struct {
 type Data struct {
 	HTML  []string `json:"text/html"`
 	Plain []string `json:"text/plain"`
+	PNG   string   `json:"image/png"`
 }
 
 type JupyterParser struct{}
@@ -47,7 +49,7 @@ func (JupyterParser) HTML(raw []byte) (string, error) {
 			extension.Typographer,
 		),
 		goldmark.WithRendererOptions(
-			html.WithUnsafe(),
+			htmlRenderer.WithUnsafe(),
 		),
 	)
 	var buf bytes.Buffer
@@ -62,26 +64,35 @@ func (JupyterParser) HTML(raw []byte) (string, error) {
 			if err != nil {
 				return "", err
 			}
-			html := buf.String()
+			result = append(result, buf.String())
 			buf.Reset()
-			result = append(result, html)
 			continue
 		}
 
 		if cell.Type == "code" {
 			src := strings.Join(cell.Source, "")
-			html := fmt.Sprintf("<pre><code class=language-python>%s</code></pre>", src)
-			result = append(result, html)
+			line := fmt.Sprintf("<pre><code class=language-python>%s</code></pre>", src)
+			result = append(result, line)
 
-			hasOut := len(cell.Outputs) != 0
-			if hasOut {
-				result = append(result, `<div class="card text-dark bg-light">`)
-				result = append(result, `<div class="card-body">`)
-			}
+			hasOut := false
 			for _, output := range cell.Outputs {
+				if output.Data.PNG != "" {
+					src := fmt.Sprintf(`<img src="data:image/png;base64,%s"/>`, output.Data.PNG)
+					result = append(result, src)
+					continue
+				}
+
 				src := strings.Join(output.Data.Plain, "")
-				html := fmt.Sprintf("<pre>%s</pre>", src)
-				result = append(result, html)
+				if src != "" {
+					if !hasOut {
+						hasOut = true
+						result = append(result, `<div class="card text-dark bg-light">`)
+						result = append(result, `<div class="card-body">`)
+					}
+					src = html.EscapeString(src)
+					src := fmt.Sprintf("<pre>%s</pre>", src)
+					result = append(result, src)
+				}
 			}
 			if hasOut {
 				result = append(result, `</div></div>`)
